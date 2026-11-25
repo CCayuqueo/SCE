@@ -1,3 +1,5 @@
+import { RoomPage } from "@/features/rooms/RoomPage";
+import { RoomsPage } from "@/features/rooms/RoomsPage";
 import { useQuery } from "@tanstack/react-query";
 import { Link, Route, Routes } from "react-router-dom";
 
@@ -53,6 +55,8 @@ export function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/app/inicio" element={<AccountHome />} />
         <Route path="/app/ajustes" element={<SettingsPage />} />
+        <Route path="/app/salas" element={<RoomsPage />} />
+        <Route path="/app/salas/:roomId" element={<RoomPage />} />
       </Route>
       <Route
         path="*"

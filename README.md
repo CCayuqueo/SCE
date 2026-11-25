@@ -2,7 +2,7 @@
 
 SRC es una aplicación web para compartir horarios académicos en salas y analizar la disponibilidad semanal del grupo. El MVP contempla cuentas y sesiones, roles por sala, revisión y confirmación de horarios, y una vista consolidada con pesos de ocupación. Su alcance termina en el análisis de disponibilidad.
 
-SRC incluye registro, inicio y cierre de sesión, un inicio protegido y ajustes de cuenta. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
+SRC incluye registro, sesiones, ajustes de cuenta y gestión de salas con roles locales. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
 
 ## Arquitectura y requisitos
 
@@ -68,6 +68,18 @@ En `/app/ajustes` puedes editar el perfil, cambiar la contraseña o revisar el i
 Para clientes de la API, `GET /api/v1/users/me/deletion-preview` devuelve la vista previa con un encabezado `ETag`. Envía ese valor como `If-Match` en `POST /api/v1/users/me/deletion`, junto con el token CSRF. Un HTTP `409` indica que se debe volver a revisar la vista previa antes de confirmar.
 
 `APP_ORIGIN` debe coincidir con el origen del navegador, incluyendo esquema y puerto. Configura HTTPS y `APP_ENV=production` para producción. Los límites de sesión se configuran con `SESSION_TTL_HOURS` y `SESSION_IDLE_MINUTES`, con valores iniciales de 24 horas y 60 minutos. Los intentos de registro y login se limitan por cuenta e IP en el proceso de FastAPI. El despliegue inicial usa un solo proceso.
+
+## Salas
+
+En `/app/salas` puedes crear una sala o unirte con un código de 12 caracteres.
+Propietarios y administradores pueden consultar y copiar el código desde el detalle,
+editar la información y promover integrantes. Solo el propietario puede revocar un
+rol de administrador, expulsar a un integrante, transferir la propiedad o eliminar
+la sala. Después de transferirla, el propietario anterior pasa a ser administrador.
+Los demás integrantes pueden abandonar la sala desde su detalle.
+
+La capacidad predeterminada es de 100 integrantes por sala, incluido el propietario.
+Puedes ajustarla con `MAX_ROOM_MEMBERS` en el entorno del backend o en `.env` si usas Compose.
 
 ## Migraciones y pruebas
 

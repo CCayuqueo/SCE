@@ -12,7 +12,7 @@ export class ApiError extends Error {
 }
 
 type RequestOptions = {
-  method?: "GET" | "POST" | "PATCH" | "PUT";
+  method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   body?: object;
   signal?: AbortSignal;
   csrfToken?: string;

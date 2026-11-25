@@ -10,3 +10,4 @@ class Settings(BaseSettings):
     app_origin: str = "http://localhost:3000"
     session_ttl_hours: Annotated[int, Field(gt=0)] = 24
     session_idle_minutes: Annotated[int, Field(gt=0)] = 60
+    max_room_members: Annotated[int, Field(gt=0)] = 100

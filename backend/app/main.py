@@ -12,6 +12,7 @@ from app.auth.router import router as auth_router
 from app.core.config import Settings
 from app.core.database import make_engine
 from app.core.errors import ApiError, handle_api_error, handle_validation_error
+from app.rooms.router import router as rooms_router
 from app.users.router import router as users_router
 
 
@@ -32,6 +33,7 @@ app.add_exception_handler(ApiError, handle_api_error)
 app.add_exception_handler(RequestValidationError, handle_validation_error)
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(rooms_router)
 
 
 @app.get("/api/v1/health/live")

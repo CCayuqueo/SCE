@@ -183,3 +183,36 @@ Fase 1 completada — Pendiente de aprobación.
 
 ### Próximo paso
 Fase 2, gestión de salas y roles, tras autorización explícita.
+
+## 2026-11-25 — Fase 2 — Salas, códigos y administración local
+
+### Objetivo
+Completar F2-01 a F2-11, tras la autorización explícita de la fase.
+
+### Cambios implementados
+- API para creación, ingreso, consulta, administración, roles, abandono, expulsión, transferencia y cierre.
+- Códigos criptográficos, reintentos ante colisión, límite de integrantes y permisos por sala. La base serializa escrituras sobre una misma sala.
+- Pantallas de listado y detalle con formularios, copia del código, tabla de integrantes y confirmaciones. Las acciones visibles dependen del rol local.
+
+### Archivos creados
+- `backend/app/rooms/`, `backend/tests/test_rooms.py` y `frontend/src/features/rooms/`.
+
+### Archivos modificados
+- Registro de rutas, autenticación y configuración del backend, rutas y cliente del frontend, `.env.example`, Compose, README y seguimiento técnico. Se revisó AGENTS.md y sus instrucciones siguen vigentes.
+
+### Decisiones técnicas
+- ADR-006 define el orden de bloqueos para mantener los permisos y la capacidad bajo concurrencia.
+
+### Pruebas realizadas
+- Diecinueve pruebas de backend con PostgreSQL y dos de frontend. Se verificaron colisiones, ingresos concurrentes, permisos por sala, cascadas y eliminación de cuenta mediante datos creados por la API de salas.
+- Playwright temporal con Brave, Vite y FastAPI. Tres cuentas verificaron creación, copia del código, ingreso, promoción, aislamiento de roles entre dos salas, abandono, transferencia y cierre.
+- Ruff, ESLint, Prettier, TypeScript/Vite, `alembic check` y `docker compose config -q` completados.
+
+### Problemas encontrados
+- El arranque completo de Docker y la ejecución en GitHub siguen pendientes. TestClient conserva el aviso de deprecación de HTTPX.
+
+### Estado
+Fase 2 completada — Pendiente de aprobación.
+
+### Próximo paso
+Fase 3, auditoría e integración del parser y grilla editable, tras autorización explícita.

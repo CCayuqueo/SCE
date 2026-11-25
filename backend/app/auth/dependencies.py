@@ -59,7 +59,9 @@ def get_current_user(request: Request, db: Db, settings: AppSettings) -> AuthCon
 
     token_hash = hash_token(token)
     user_id = db.scalar(select(Session.user_id).where(Session.token_hash == token_hash))
-    user = db.get(User, user_id, with_for_update=True) if user_id else None
+    user = (
+        db.get(User, user_id, with_for_update={"key_share": True}) if user_id else None
+    )
     if user is None:
         raise unauthorized
     session = db.scalar(select(Session).where(Session.token_hash == token_hash))

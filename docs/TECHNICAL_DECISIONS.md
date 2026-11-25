@@ -54,3 +54,14 @@
 - Justificación: La versión detecta cambios incluso cuando las decisiones siguen teniendo una forma válida y mantiene el cuerpo JSON definido por el plan.
 - Consecuencias: Un cambio o una decisión inválida devuelve `409`. El frontend vuelve a mostrar la vista previa. La fase de salas deberá respetar el orden de bloqueo al modificar su propiedad y membresías.
 - Archivos afectados: `backend/app/users/`, `frontend/src/features/account/`.
+
+## ADR-006 — Serialización de cambios de membresía por sala
+
+- Fecha: 2026-11-25.
+- Estado: Adoptada en Fase 2.
+- Contexto: El ingreso simultáneo debe respetar capacidad y unicidad. Las decisiones de rol deben seguir vigentes hasta confirmar una escritura.
+- Decisión: Bloquear la fila de la sala durante el ingreso o escritura y volver a consultar el permiso antes de actuar. El usuario autenticado se bloquea sin bloquear referencias de clave foránea.
+- Alternativas consideradas: Contar integrantes sin bloqueo o usar un bloqueo global.
+- Justificación: El bloqueo local serializa cambios de una sala sin detener operaciones de otras salas. Las restricciones existentes siguen siendo la garantía final.
+- Consecuencias: Las futuras operaciones que cambien membresías deben seguir el orden usuario, sala y membresía y respetar las restricciones diferibles.
+- Archivos afectados: `backend/app/rooms/` y `backend/app/auth/dependencies.py`.

@@ -20,6 +20,7 @@ services:
       APP_ORIGIN: ${APP_ORIGIN:-http://localhost:3000}
       SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-24}
       SESSION_IDLE_MINUTES: ${SESSION_IDLE_MINUTES:-60}
+      MAX_ROOM_MEMBERS: ${MAX_ROOM_MEMBERS:-100}
       # FastAPI solo se alcanza dentro de la red privada. Nginx sobrescribe X-Forwarded-For.
       FORWARDED_ALLOW_IPS: "*"
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-src}:${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}@database:5432/${POSTGRES_DB:-src}

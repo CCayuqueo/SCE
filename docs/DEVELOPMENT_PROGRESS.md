@@ -2,12 +2,12 @@
 
 ## Estado general
 
-- Fase actual: Fase 1 — Base de datos, autenticación y eliminación de cuenta.
+- Fase actual: Fase 2 — Gestión de salas, códigos únicos y roles locales.
 - Estado: Completada — Pendiente de aprobación.
 - Última actualización: 2026-11-25.
-- Última tarea completada: perfil, cambio de contraseña y eliminación transaccional de cuenta.
-- Próxima tarea pendiente: Fase 2 — Gestión de salas, códigos únicos y roles locales, tras autorización.
-- Aprobación para avanzar: Fase 1 autorizada explícitamente. Fase 2 pendiente.
+- Última tarea completada: salas, membresías, roles, transferencias y verificación integral.
+- Próxima tarea pendiente: Fase 3 — Procesamiento de imágenes y horarios, tras autorización.
+- Aprobación para avanzar: Fase 2 autorizada explícitamente. Fase 3 pendiente.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
 La tabla detallada «0.1. Tareas de infraestructura» reutiliza F0-01 a F0-09 con significados distintos. La
@@ -44,17 +44,34 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Fase 2 — Salas, códigos y roles
 
-- [ ] F2-01 · Implementar creación transaccional de salas.
-- [ ] F2-02 · Implementar generación segura de códigos.
-- [ ] F2-03 · Implementar consulta e ingreso a salas.
-- [ ] F2-04 · Implementar dependencias de autorización local.
-- [ ] F2-05 · Implementar consulta de miembros.
-- [ ] F2-06 · Implementar promoción y revocación de administradores.
-- [ ] F2-07 · Implementar transferencia, abandono y cierre de salas.
-- [ ] F2-08 · Construir pantalla Salas y formularios.
-- [ ] F2-09 · Construir espacio de trabajo y navegación por rol.
-- [ ] F2-10 · Construir interfaz de gestión de miembros.
-- [ ] F2-11 · Validar concurrencia, permisos y eliminación de cuentas.
+- [x] F2-01 · Implementar creación transaccional de salas.
+- [x] F2-02 · Implementar generación segura de códigos.
+- [x] F2-03 · Implementar consulta e ingreso a salas.
+- [x] F2-04 · Implementar dependencias de autorización local.
+- [x] F2-05 · Implementar consulta de miembros.
+- [x] F2-06 · Implementar promoción y revocación de administradores.
+- [x] F2-07 · Implementar transferencia, abandono y cierre de salas.
+- [x] F2-08 · Construir pantalla Salas y formularios.
+- [x] F2-09 · Construir espacio de trabajo y navegación por rol.
+- [x] F2-10 · Construir interfaz de gestión de miembros.
+- [x] F2-11 · Validar concurrencia, permisos y eliminación de cuentas.
+
+### Criterios de aceptación de Fase 2
+
+| ID | Estado | Evidencia |
+|---|---|---|
+| CA2-01 | Verificado | Creación autenticada por API y navegador. |
+| CA2-02 | Verificado | Colisión simulada en una tabla real, reintento con código distinto. |
+| CA2-03 | Verificado | Creador con rol efectivo de propietario y membresía de administrador. |
+| CA2-04 | Verificado | Ingreso por código válido en API y navegador. |
+| CA2-05 | Verificado | Código inexistente devuelve 404 y deja la lista vacía. |
+| CA2-06 | Verificado | Ingreso repetido idempotente y capacidad respetada bajo concurrencia. |
+| CA2-07 | Verificado | Un administrador promovió al tercer integrante. |
+| CA2-08 | Verificado | Miembro regular recibió 403 al intentar promover. |
+| CA2-09 | Verificado | La misma cuenta fue administradora en Sala A y miembro en Sala B. |
+| CA2-10 | Verificado | Acceso externo y referencias a membresías de otras salas devuelven 404. |
+| CA2-11 | Verificado | Transferencia y rol del propietario anterior comprobados por API y navegador. |
+| CA2-12 | Verificado | Abandono, expulsión y cierre eliminaron horarios y bloques dependientes. |
 
 ## Fase 3 — Procesamiento de imágenes y horarios
 
@@ -124,5 +141,5 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Próximos pasos
 
-- Iniciar la Fase 2 cuando esté autorizada explícitamente.
+- Iniciar la Fase 3 cuando esté autorizada explícitamente.
 - Completar las verificaciones pendientes de infraestructura cuando el entorno lo permita.

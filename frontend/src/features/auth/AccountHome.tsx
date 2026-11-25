@@ -26,6 +26,9 @@ export function AccountHome() {
     <main className="mx-auto max-w-2xl px-6 py-16 text-slate-900">
       <h1 className="text-3xl font-bold">Inicio</h1>
       <p className="mt-4">Sesión iniciada como {auth.session?.user.name}.</p>
+      <Link to="/app/salas" className="mt-6 block text-blue-800 underline">
+        Salas
+      </Link>
       <Link to="/app/ajustes" className="mt-6 block text-blue-800 underline">
         Ajustes
       </Link>
