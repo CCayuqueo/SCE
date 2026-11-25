@@ -21,3 +21,14 @@
 - Justificación: Valida el acceso a PostgreSQL y la infraestructura de migraciones sin adelantar el esquema.
 - Consecuencias: La primera migración funcional deberá descender de `0001`. La Fase 1 deberá verificar restricciones y cascadas con PostgreSQL real.
 - Archivos afectados: `backend/migrations/`, `backend/alembic.ini`, `docker-compose.yml`.
+
+## ADR-003 — La base de datos garantiza la membresía del propietario
+
+- Fecha: 2026-11-25.
+- Estado: Adoptada según el plan maestro.
+- Contexto: Las salas conservadas deben tener un propietario que también sea administrador local.
+- Decisión: Aplicar la clave foránea compuesta `fk_room_owner_membership` al finalizar la transacción. La clave directa al usuario propietario usa `ON DELETE RESTRICT`.
+- Alternativas consideradas: Validar la membresía exclusivamente en FastAPI o propagar la eliminación del usuario propietario a la sala.
+- Justificación: PostgreSQL verifica la coherencia incluso ante escrituras fuera de FastAPI. El carácter diferible permite crear una sala y su membresía en la misma transacción.
+- Consecuencias: Para eliminar al propietario, el servicio deberá transferir la sala a una membresía administradora o cerrar la sala explícitamente antes de eliminar al usuario. La capa de servicio verificará que un horario confirmado contenga 70 celdas.
+- Archivos afectados: `backend/app/models.py` y `backend/migrations/versions/0002_esquema_inicial_src.py`.

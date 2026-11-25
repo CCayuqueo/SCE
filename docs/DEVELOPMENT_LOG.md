@@ -76,3 +76,40 @@ Parcialmente completada. El entorno local está verificado y quedan pendientes l
 
 ### Próximo paso
 Verificar Compose y CI, y obtener aprobación explícita antes de comenzar la Fase 1.
+
+## 2026-11-25 — Fase 1 — Modelos y migración inicial
+
+### Objetivo
+Completar F1-01 y F1-02, correspondientes a F1-B01 a F1-B07. El usuario autorizó iniciar la Fase 1 y guardar avances con commits.
+
+### Cambios implementados
+- Modelos SQLAlchemy y migración `0002` para las seis tablas del plan.
+- Restricciones de unicidad, rangos, estados, propiedad y eliminación en cascada. La referencia a la membresía del propietario se comprueba al finalizar la transacción.
+- Pruebas de integridad con PostgreSQL real e incorporación al job de backend en GitHub Actions.
+
+### Archivos creados
+- `backend/app/models.py`, `backend/migrations/versions/0002_esquema_inicial_src.py`, `backend/tests/test_schema.py`.
+
+### Archivos modificados
+- `backend/migrations/env.py`, `.github/workflows/ci.yml`, `README.md` y documentos de seguimiento.
+
+### Decisiones técnicas
+- ADR-003 documenta la clave foránea diferible y las implicaciones para la futura eliminación de cuentas.
+
+### Comandos ejecutados
+- `alembic upgrade head`, `alembic check`, `alembic downgrade 0001`, `pytest -m 'integration or not integration'`, `ruff check .` y `ruff format .`.
+
+### Pruebas realizadas
+- Cinco pruebas aprobadas en el backend. PostgreSQL rechazó registros y coordenadas duplicados, estados de propiedad inválidos y la eliminación de un dueño sin resolver su sala. Una transferencia válida conservó la sala y la eliminación del dueño anterior propagó las cascadas.
+- En una base temporal PostgreSQL 17.12 se aplicaron las migraciones, se revirtió `0002` y se aplicó de nuevo. `alembic check` no encontró diferencias.
+- La infraestructura previa quedó registrada en el commit `4ee7e0c`.
+
+### Problemas encontrados
+- Docker continúa sin acceso al daemon. Se usó PostgreSQL por socket local. El workflow modificado está pendiente de ejecución en GitHub.
+- TestClient sigue emitiendo el aviso de deprecación de HTTPX registrado en la Fase 0.
+
+### Estado
+Bloque de esquema completado y verificado. Fase 1 parcialmente completada.
+
+### Próximo paso
+Implementar registro con Argon2id, login, sesiones revocables y CSRF antes de construir el perfil y la eliminación de cuenta.

@@ -2,7 +2,7 @@
 
 SRC es una aplicación web para compartir horarios académicos en salas y analizar la disponibilidad semanal del grupo. El MVP contempla cuentas y sesiones, roles por sala, revisión y confirmación de horarios, y una vista consolidada con pesos de ocupación. Su alcance termina en el análisis de disponibilidad.
 
-La base de la Fase 0 incluye una pantalla de estado, dos endpoints de salud, PostgreSQL y la configuración de migraciones. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las verificaciones pendientes.
+SRC incluye una pantalla de estado, dos endpoints de salud y el esquema inicial de PostgreSQL. La Fase 1 está en desarrollo. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
 
 ## Arquitectura y requisitos
 
@@ -61,7 +61,7 @@ Vite muestra la URL local y redirige `/api` a `http://127.0.0.1:8000`. Para camb
 
 ## Migraciones y pruebas
 
-Compose aplica `alembic upgrade head` antes de iniciar FastAPI. La revisión `0001` comprueba el recorrido desde una base vacía y deja la creación del esquema de negocio para la Fase 1.
+Compose aplica `alembic upgrade head` antes de iniciar FastAPI. La revisión base es `0001`. La revisión `0002` crea `users`, `rooms`, `room_members`, `schedules`, `schedule_blocks` y `sessions`, con restricciones de integridad y eliminación en cascada.
 
 Desde `backend/` y con el entorno Python activado:
 
@@ -69,7 +69,8 @@ Desde `backend/` y con el entorno Python activado:
 ruff check .
 ruff format --check .
 pytest
-# Con DATABASE_URL apuntando a PostgreSQL de pruebas:
+# Con DATABASE_URL apuntando a una base PostgreSQL de pruebas:
+alembic upgrade head
 pytest -m integration
 alembic check
 ```

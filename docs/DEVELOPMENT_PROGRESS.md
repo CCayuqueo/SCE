@@ -2,18 +2,20 @@
 
 ## Estado general
 
-- Fase actual: Fase 0 — Configuración e infraestructura.
-- Estado: Parcialmente completada.
+- Fase actual: Fase 1 — Base de datos, autenticación y eliminación de cuenta.
+- Estado: Parcialmente completada. Esquema verificado en PostgreSQL.
 - Última actualización: 2026-11-25.
-- Última tarea completada: pruebas locales de frontend, FastAPI, PostgreSQL y Alembic.
-- Próxima tarea pendiente: validar Compose y GitHub Actions, y comprobar el arranque desde un clon.
-- Aprobación para avanzar: Pendiente.
+- Última tarea completada: modelos, migración y restricciones de las seis tablas.
+- Próxima tarea pendiente: registro, hashing, sesiones y protección de operaciones autenticadas.
+- Aprobación para avanzar: Fase 1 autorizada explícitamente. Fase 2 pendiente.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
 La tabla detallada «0.1. Tareas de infraestructura» reutiliza F0-01 a F0-09 con significados distintos. La
 validación de Fase 0 se realiza por entregable y por criterio CA0, sin renumerar el plan.
 
 ## Fase 0 — Configuración e infraestructura
+
+El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docker, la verificación desde un clon y la ejecución de GitHub Actions.
 
 - [ ] F0-01 · Crear repositorio y estrategia de ramas.
 - [x] F0-02 · Inicializar React, TypeScript y Vite.
@@ -27,8 +29,8 @@ validación de Fase 0 se realiza por entregable y por criterio CA0, sin renumera
 
 ## Fase 1 — Base de datos y autenticación
 
-- [ ] F1-01 · Crear modelos y migraciones de las seis tablas.
-- [ ] F1-02 · Implementar restricciones y relaciones.
+- [x] F1-01 · Crear modelos y migraciones de las seis tablas.
+- [x] F1-02 · Implementar restricciones y relaciones.
 - [ ] F1-03 · Implementar registro y hashing de contraseñas.
 - [ ] F1-04 · Implementar login y sesiones.
 - [ ] F1-05 · Implementar autorización global y CSRF.
@@ -118,8 +120,10 @@ validación de Fase 0 se realiza por entregable y por criterio CA0, sin renumera
 
 ## Pruebas pendientes
 
+- Pruebas de autenticación, perfil y eliminación de cuenta por API y navegador.
 - Arranque de Compose, validación de Nginx, prueba del parser en el contenedor y ejecución de GitHub Actions.
 
 ## Próximos pasos
 
-- Completar las verificaciones de Fase 0 y solicitar aprobación explícita.
+- Continuar con los bloques pendientes de Fase 1.
+- Completar las verificaciones pendientes de infraestructura cuando el entorno lo permita.
