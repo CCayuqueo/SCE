@@ -1,0 +1,73 @@
+name: CI
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - run: ruff check . && ruff format --check .
+      - run: pytest
+      - run: python ../horario_parser.py ../images > /dev/null
+
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Configurar contraseña efímera para PostgreSQL
+        run: |
+          password=$(openssl rand -hex 24)
+          echo "::add-mask::$password"
+          echo "POSTGRES_PASSWORD=$password" >> "$GITHUB_ENV"
+      - run: docker compose up --build --wait --wait-timeout 120
+      - name: Verificar proxy, PostgreSQL y migración inicial
+        run: |
+          curl --fail --silent --show-error http://localhost:3000/ | grep '<title>SRC</title>'
+          curl --fail --silent --show-error http://localhost:3000/api/v1/health/live | grep '"status":"ok"'
+          curl --fail --silent --show-error http://localhost:3000/api/v1/health/ready | grep '"status":"ok"'
+          docker compose exec -T backend alembic current | grep '(head)'
+          docker compose exec -T backend alembic check
+      - name: Verificar compatibilidad del parser en la imagen Python
+        run: |
+          docker compose run --rm --no-deps \
+            -v "$PWD/horario_parser.py:/parser/horario_parser.py:ro" \
+            -v "$PWD/images:/parser/images:ro" \
+            backend python /parser/horario_parser.py /parser/images > /dev/null
+      - if: failure()
+        run: docker compose logs
+      - if: always()
+        run: docker compose down
