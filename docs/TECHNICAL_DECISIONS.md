@@ -32,3 +32,14 @@
 - Justificación: PostgreSQL verifica la coherencia incluso ante escrituras fuera de FastAPI. El carácter diferible permite crear una sala y su membresía en la misma transacción.
 - Consecuencias: Para eliminar al propietario, el servicio deberá transferir la sala a una membresía administradora o cerrar la sala explícitamente antes de eliminar al usuario. La capa de servicio verificará que un horario confirmado contenga 70 celdas.
 - Archivos afectados: `backend/app/models.py` y `backend/migrations/versions/0002_esquema_inicial_src.py`.
+
+## ADR-004 — Sesión opaca revocable y CSRF recuperable
+
+- Fecha: 2026-11-25.
+- Estado: Adoptada según el plan maestro.
+- Contexto: SRC necesita invalidar sesiones desde PostgreSQL y recuperar el token CSRF tras recargar.
+- Decisión: Usar una cookie opaca aleatoria y guardar sus hashes SHA-256 en PostgreSQL. El servidor deriva el token CSRF mediante HMAC con la cookie como clave y un mensaje fijo exclusivo de SRC. Guarda el hash del CSRF y valida las escrituras con token y origen.
+- Alternativas consideradas: JWT de larga vida, guardar el token CSRF en texto plano o rotarlo en cada consulta de sesión.
+- Justificación: Revocación inmediata, sin almacenar tokens reutilizables en PostgreSQL. Una consulta de sesión recupera el token esperado sin invalidar otras pestañas.
+- Consecuencias: El cliente debe consultar `/auth/me` para recuperar la sesión y enviar `X-CSRF-Token` en escrituras autenticadas. Los límites de intentos por cuenta e IP viven en la memoria del proceso y se reinician con él. Si se habilitan réplicas, deberán compartir un mecanismo de límite. En Compose, Nginx reemplaza el encabezado de dirección IP antes de enviarlo a FastAPI por la red privada.
+- Archivos afectados: `backend/app/auth/`, `infrastructure/nginx/default.conf` y `docker-compose.yml`.

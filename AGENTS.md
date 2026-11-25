@@ -6,7 +6,7 @@ SRC analiza la disponibilidad horaria académica en salas con permisos locales. 
 
 Lee este archivo, el plan maestro, `docs/DEVELOPMENT_PROGRESS.md`, `docs/DEVELOPMENT_LOG.md`, `docs/TECHNICAL_DECISIONS.md` y `README.md`, en ese orden. Revisa `git status` e inspecciona el código de la tarea pendiente antes de editar. Conserva los cambios del usuario.
 
-Trabaja en una fase a la vez y ejecuta cada tarea según sus dependencias. Registra resultados reales al completar cada bloque significativo y antes de terminar la sesión. Mantén actualizado el README y conserva el historial de la bitácora y los ADR. Una fase terminada queda pendiente de aprobación explícita. Detente y pide autorización antes de iniciar la siguiente. No hagas commits, pushes, merges ni operaciones destructivas sin autorización.
+Trabaja en una fase a la vez y ejecuta cada tarea según sus dependencias. Registra resultados reales al completar cada bloque significativo y antes de terminar la sesión. Mantén actualizado el README y conserva el historial de la bitácora y los ADR. Una fase terminada queda pendiente de aprobación explícita. Detente antes de iniciar la siguiente. Ejecuta los comandos rutinarios sin pedir confirmación. Usa `git add` y `git commit` para guardar bloques verificados. Los pushes, merges y operaciones destructivas requieren autorización.
 
 ## Arquitectura y convenciones
 

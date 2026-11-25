@@ -2,7 +2,7 @@
 
 SRC es una aplicación web para compartir horarios académicos en salas y analizar la disponibilidad semanal del grupo. El MVP contempla cuentas y sesiones, roles por sala, revisión y confirmación de horarios, y una vista consolidada con pesos de ocupación. Su alcance termina en el análisis de disponibilidad.
 
-SRC incluye una pantalla de estado, dos endpoints de salud y el esquema inicial de PostgreSQL. La Fase 1 está en desarrollo. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
+SRC incluye una pantalla de estado, registro, inicio y cierre de sesión y un inicio protegido. La Fase 1 está en desarrollo. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
 
 ## Arquitectura y requisitos
 
@@ -46,7 +46,7 @@ source .venv/bin/activate
 python -m pip install -r backend/requirements-dev.txt
 cd backend
 alembic upgrade head
-uvicorn app.main:app --reload --port 8000
+APP_ORIGIN=http://localhost:5173 uvicorn app.main:app --reload --port 8000
 ```
 
 En otra terminal, desde la raíz:
@@ -54,10 +54,16 @@ En otra terminal, desde la raíz:
 ```bash
 cd frontend
 npm ci
-npm run dev
+npm run dev -- --port 5173 --strictPort
 ```
 
 Vite muestra la URL local y redirige `/api` a `http://127.0.0.1:8000`. Para cambiar ese destino, usa `SRC_API_PROXY_TARGET` al arrancar Vite. `VITE_API_BASE_URL` permite cambiar el prefijo del cliente al compilar, cuyo valor predeterminado es `/api/v1`.
+
+## Autenticación
+
+Puedes crear una cuenta en `/register` e iniciar sesión en `/login`. Tras autenticarte puedes entrar en `/app/inicio`, recargar y cerrar la sesión. FastAPI guarda hashes de contraseñas y tokens. El navegador conserva la sesión en una cookie `HttpOnly` y usa un token CSRF para cerrar sesión.
+
+`APP_ORIGIN` debe coincidir con el origen del navegador, incluyendo esquema y puerto. Configura HTTPS y `APP_ENV=production` para producción. Los límites de sesión se configuran con `SESSION_TTL_HOURS` y `SESSION_IDLE_MINUTES`, con valores iniciales de 24 horas y 60 minutos. Los intentos de registro y login se limitan por cuenta e IP en el proceso de FastAPI. El despliegue inicial usa un solo proceso.
 
 ## Migraciones y pruebas
 

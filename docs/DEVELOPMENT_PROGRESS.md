@@ -3,10 +3,10 @@
 ## Estado general
 
 - Fase actual: Fase 1 — Base de datos, autenticación y eliminación de cuenta.
-- Estado: Parcialmente completada. Esquema verificado en PostgreSQL.
+- Estado: Parcialmente completada. Esquema y autenticación verificados con PostgreSQL y navegador.
 - Última actualización: 2026-11-25.
-- Última tarea completada: modelos, migración y restricciones de las seis tablas.
-- Próxima tarea pendiente: registro, hashing, sesiones y protección de operaciones autenticadas.
+- Última tarea completada: registro, inicio y cierre de sesión, recuperación tras recarga y rutas protegidas.
+- Próxima tarea pendiente: perfil, cambio de contraseña y eliminación transaccional de cuenta.
 - Aprobación para avanzar: Fase 1 autorizada explícitamente. Fase 2 pendiente.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
@@ -31,14 +31,14 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 - [x] F1-01 · Crear modelos y migraciones de las seis tablas.
 - [x] F1-02 · Implementar restricciones y relaciones.
-- [ ] F1-03 · Implementar registro y hashing de contraseñas.
-- [ ] F1-04 · Implementar login y sesiones.
-- [ ] F1-05 · Implementar autorización global y CSRF.
+- [x] F1-03 · Implementar registro y hashing de contraseñas.
+- [x] F1-04 · Implementar login y sesiones.
+- [x] F1-05 · Implementar autorización global y CSRF.
 - [ ] F1-06 · Implementar perfil y cambio de contraseña.
 - [ ] F1-07 · Implementar previsualización de eliminación.
 - [ ] F1-08 · Implementar eliminación y transferencias transaccionales.
-- [ ] F1-09 · Crear pantallas Login y Registro.
-- [ ] F1-10 · Implementar AuthProvider y rutas protegidas.
+- [x] F1-09 · Crear pantallas Login y Registro.
+- [x] F1-10 · Implementar AuthProvider y rutas protegidas.
 - [ ] F1-11 · Crear pantalla Ajustes y confirmaciones.
 - [ ] F1-12 · Ejecutar pruebas de autenticación e integridad.
 

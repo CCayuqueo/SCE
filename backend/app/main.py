@@ -2,17 +2,23 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.auth.rate_limit import AuthRateLimiter
+from app.auth.router import router as auth_router
 from app.core.config import Settings
 from app.core.database import make_engine
+from app.core.errors import ApiError, handle_api_error, handle_validation_error
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    engine = make_engine(Settings())
+    app.state.settings = Settings()
+    app.state.auth_rate_limit = AuthRateLimiter()
+    engine = make_engine(app.state.settings)
     app.state.db = engine
     try:
         yield
@@ -21,6 +27,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="SRC", version="1.0.0", lifespan=lifespan)
+app.add_exception_handler(ApiError, handle_api_error)
+app.add_exception_handler(RequestValidationError, handle_validation_error)
+app.include_router(auth_router)
 
 
 @app.get("/api/v1/health/live")

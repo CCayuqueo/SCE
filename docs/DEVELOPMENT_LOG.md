@@ -113,3 +113,39 @@ Bloque de esquema completado y verificado. Fase 1 parcialmente completada.
 
 ### Próximo paso
 Implementar registro con Argon2id, login, sesiones revocables y CSRF antes de construir el perfil y la eliminación de cuenta.
+
+## 2026-11-25 — Fase 1 — Registro, sesiones y acceso web
+
+### Objetivo
+Completar F1-03 a F1-05 y F1-09 a F1-10.
+
+### Cambios implementados
+- API de registro, login, recuperación y logout, con Argon2id, cookies HttpOnly y sesiones revocables en PostgreSQL.
+- Validación de origen para escrituras, CSRF para operaciones autenticadas y límites de intentos por cuenta e IP.
+- Formularios de registro e inicio, restauración al recargar, ruta protegida e invalidación de sesión ante HTTP 401.
+- Errores de validación con formato del plan y sin datos ingresados por el usuario.
+
+### Archivos creados
+- `backend/app/auth/`, `backend/app/core/errors.py`, `backend/tests/test_auth.py`, `backend/tests/test_rate_limit.py` y `frontend/src/features/auth/`.
+
+### Archivos modificados
+- `backend/app/core/config.py`, `backend/app/main.py`, `.env.example`, `docker-compose.yml`, `infrastructure/nginx/default.conf`, entradas del frontend, cliente HTTP y documentación.
+
+### Decisiones técnicas
+- ADR-004 documenta cookies opacas, hashes, CSRF recuperable y límites para el proceso web único.
+
+### Comandos y pruebas
+- Ruff, ESLint, Prettier, Vitest y compilación TypeScript/Vite completados. Dos pruebas Vitest pasaron.
+- Trece pruebas Pytest pasaron con PostgreSQL 17.12, incluidas revocación, expiración, origen, CSRF y límites.
+- Prueba temporal con Playwright y Brave sobre Vite, FastAPI y PostgreSQL. Pasaron redirección de ruta privada, registro, recarga, login rechazado, login correcto y logout. La cookie quedó inaccesible a JavaScript y desapareció al cerrar sesión.
+- `docker compose config -q` pasó. Sigue pendiente la ejecución del proxy Nginx en contenedores y del workflow en GitHub.
+
+### Problemas encontrados
+- La primera prueba de rotación agregó una cookie manual con un dominio distinto al de TestClient. Se corrigió la simulación y se volvió a verificar.
+- Se mantiene el aviso de deprecación de HTTPX en TestClient. Los límites de intentos son por proceso, según el despliegue inicial de un solo proceso.
+
+### Estado
+Bloque de autenticación completado. Fase 1 parcialmente completada.
+
+### Próximo paso
+Implementar perfil, cambio de contraseña, previsualización y eliminación transaccional de cuenta con las pantallas correspondientes.
