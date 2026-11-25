@@ -2,7 +2,7 @@
 
 SRC es una aplicación web para compartir horarios académicos en salas y analizar la disponibilidad semanal del grupo. El MVP contempla cuentas y sesiones, roles por sala, revisión y confirmación de horarios, y una vista consolidada con pesos de ocupación. Su alcance termina en el análisis de disponibilidad.
 
-SRC incluye una pantalla de estado, registro, inicio y cierre de sesión y un inicio protegido. La Fase 1 está en desarrollo. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
+SRC incluye registro, inicio y cierre de sesión, un inicio protegido y ajustes de cuenta. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
 
 ## Arquitectura y requisitos
 
@@ -62,6 +62,10 @@ Vite muestra la URL local y redirige `/api` a `http://127.0.0.1:8000`. Para camb
 ## Autenticación
 
 Puedes crear una cuenta en `/register` e iniciar sesión en `/login`. Tras autenticarte puedes entrar en `/app/inicio`, recargar y cerrar la sesión. FastAPI guarda hashes de contraseñas y tokens. El navegador conserva la sesión en una cookie `HttpOnly` y usa un token CSRF para cerrar sesión.
+
+En `/app/ajustes` puedes editar el perfil, cambiar la contraseña o revisar el impacto de eliminar tu cuenta. Cambiar el correo requiere la contraseña actual. Cambiar la contraseña cierra las demás sesiones. Para eliminar la cuenta, revisa las salas afectadas, elige un sucesor o confirma el cierre de cada sala compartida que poseas, e introduce la contraseña actual y la palabra `ELIMINAR`.
+
+Para clientes de la API, `GET /api/v1/users/me/deletion-preview` devuelve la vista previa con un encabezado `ETag`. Envía ese valor como `If-Match` en `POST /api/v1/users/me/deletion`, junto con el token CSRF. Un HTTP `409` indica que se debe volver a revisar la vista previa antes de confirmar.
 
 `APP_ORIGIN` debe coincidir con el origen del navegador, incluyendo esquema y puerto. Configura HTTPS y `APP_ENV=production` para producción. Los límites de sesión se configuran con `SESSION_TTL_HOURS` y `SESSION_IDLE_MINUTES`, con valores iniciales de 24 horas y 60 minutos. Los intentos de registro y login se limitan por cuenta e IP en el proceso de FastAPI. El despliegue inicial usa un solo proceso.
 

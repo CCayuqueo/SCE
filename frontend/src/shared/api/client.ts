@@ -12,10 +12,12 @@ export class ApiError extends Error {
 }
 
 type RequestOptions = {
-  method?: "GET" | "POST";
+  method?: "GET" | "POST" | "PATCH" | "PUT";
   body?: object;
   signal?: AbortSignal;
   csrfToken?: string;
+  ifMatch?: string;
+  onResponse?: (response: Response) => void;
   notifyUnauthorized?: boolean;
 };
 
@@ -26,6 +28,7 @@ export async function requestJson<T>(
   const headers = new Headers({ Accept: "application/json" });
   if (options.body) headers.set("Content-Type", "application/json");
   if (options.csrfToken) headers.set("X-CSRF-Token", options.csrfToken);
+  if (options.ifMatch) headers.set("If-Match", options.ifMatch);
 
   const response = await fetch(`${baseUrl}${path}`, {
     method: options.method ?? "GET",
@@ -49,6 +52,7 @@ export async function requestJson<T>(
         : `La API respondió con HTTP ${response.status}`,
     );
   }
+  options.onResponse?.(response);
   return (response.status === 204 ? undefined : await response.json()) as T;
 }
 

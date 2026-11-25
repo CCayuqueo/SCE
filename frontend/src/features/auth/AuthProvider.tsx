@@ -54,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         checking: query.isPending,
         unavailable: query.isError,
         retry: () => void query.refetch(),
+        clearSession: () => setSession(null),
         login: async (credentials) => setSession(await signIn(credentials)),
         register: async (registration) =>
           setSession(await signUp(registration)),

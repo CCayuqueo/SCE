@@ -6,6 +6,7 @@ from app.auth.dependencies import (
     CsrfUser,
     CurrentUser,
     Db,
+    limit,
     require_json,
     require_origin,
 )
@@ -28,11 +29,6 @@ def set_session_cookie(response: Response, token: str, settings: AppSettings) ->
         path="/",
         max_age=settings.session_ttl_hours * 3600,
     )
-
-
-def limit(request: Request, operation: str, email: str) -> None:
-    ip = request.client.host if request.client else "unknown"
-    request.app.state.auth_rate_limit.check(operation, email, ip)
 
 
 @router.post("/register", status_code=201, dependencies=public_write)
@@ -80,6 +76,10 @@ def logout_user(
 ) -> None:
     db.delete(auth.session)
     db.commit()
+    clear_session_cookie(response, settings)
+
+
+def clear_session_cookie(response: Response, settings: AppSettings) -> None:
     response.headers["Cache-Control"] = "no-store"
     response.delete_cookie(
         SESSION_COOKIE,

@@ -149,3 +149,37 @@ Bloque de autenticación completado. Fase 1 parcialmente completada.
 
 ### Próximo paso
 Implementar perfil, cambio de contraseña, previsualización y eliminación transaccional de cuenta con las pantallas correspondientes.
+
+## 2026-11-25 — Fase 1 — Ajustes, eliminación de cuenta y cierre
+
+### Objetivo
+Completar F1-06 a F1-08 y F1-11 a F1-12.
+
+### Cambios implementados
+- API y pantalla de perfil con reautenticación para cambiar el correo. Cambio de contraseña que revoca las demás sesiones.
+- Vista previa con recuentos y candidatos a sucesor. La recomendación prioriza a los administradores por antigüedad.
+- Eliminación transaccional de cuenta, con confirmación explícita, validación de la vista previa, transferencia o cierre y cascadas.
+- Pantalla Ajustes y diálogo accesible de revisión y confirmación.
+
+### Archivos creados
+- `backend/app/users/`, `backend/tests/test_users.py` y `frontend/src/features/account/`.
+
+### Archivos modificados
+- Autenticación y registro de rutas en FastAPI. Cliente HTTP, rutas y estado de sesión en React. README y documentos de seguimiento. Se revisó AGENTS.md y siguen vigentes sus instrucciones.
+
+### Decisiones técnicas
+- ADR-005 documenta la protección contra confirmar una vista previa desactualizada mediante ETag e If-Match.
+
+### Comandos y pruebas
+- Pytest con PostgreSQL 17.12: 15 pruebas pasaron. Las pruebas nuevas validaron perfil, revocación de otras sesiones, reautenticación, conflictos, transferencia, cierre y conservación de horarios de otros integrantes.
+- Playwright temporal con Brave, Vite y FastAPI: edición de perfil, cambio de contraseña y eliminación, incluida la redirección a login y desaparición de la cookie.
+- Ruff, ESLint, Prettier, TypeScript/Vite, dos pruebas de Vitest y `alembic check` pasaron.
+
+### Problemas encontrados
+- Sigue pendiente la ejecución de Docker y del pipeline de GitHub. Se mantiene el aviso de deprecación de HTTPX en TestClient.
+
+### Estado
+Fase 1 completada — Pendiente de aprobación.
+
+### Próximo paso
+Fase 2, gestión de salas y roles, tras autorización explícita.

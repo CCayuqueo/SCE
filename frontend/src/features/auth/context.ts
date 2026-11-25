@@ -10,6 +10,7 @@ type AuthState = {
   login: (credentials: Credentials) => Promise<void>;
   register: (registration: Registration) => Promise<void>;
   logout: () => Promise<void>;
+  clearSession: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthState | null>(null);

@@ -90,3 +90,8 @@ def require_csrf(
 
 
 CsrfUser = Annotated[AuthContext, Depends(require_csrf)]
+
+
+def limit(request: Request, operation: str, email: str) -> None:
+    ip = request.client.host if request.client else "unknown"
+    request.app.state.auth_rate_limit.check(operation, email, ip)

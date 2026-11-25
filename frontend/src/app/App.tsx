@@ -3,6 +3,7 @@ import { Link, Route, Routes } from "react-router-dom";
 
 import { getJson } from "@/shared/api/client";
 import { AccountHome } from "@/features/auth/AccountHome";
+import { SettingsPage } from "@/features/account/SettingsPage";
 import { AuthPage } from "@/features/auth/AuthPage";
 import { ProtectedRoute } from "@/features/auth/ProtectedRoute";
 
@@ -51,6 +52,7 @@ export function App() {
       />
       <Route element={<ProtectedRoute />}>
         <Route path="/app/inicio" element={<AccountHome />} />
+        <Route path="/app/ajustes" element={<SettingsPage />} />
       </Route>
       <Route
         path="*"

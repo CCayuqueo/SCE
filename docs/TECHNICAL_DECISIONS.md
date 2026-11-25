@@ -43,3 +43,14 @@
 - Justificación: Revocación inmediata, sin almacenar tokens reutilizables en PostgreSQL. Una consulta de sesión recupera el token esperado sin invalidar otras pestañas.
 - Consecuencias: El cliente debe consultar `/auth/me` para recuperar la sesión y enviar `X-CSRF-Token` en escrituras autenticadas. Los límites de intentos por cuenta e IP viven en la memoria del proceso y se reinician con él. Si se habilitan réplicas, deberán compartir un mecanismo de límite. En Compose, Nginx reemplaza el encabezado de dirección IP antes de enviarlo a FastAPI por la red privada.
 - Archivos afectados: `backend/app/auth/`, `infrastructure/nginx/default.conf` y `docker-compose.yml`.
+
+## ADR-005 — Confirmación de eliminación vinculada a la vista previa
+
+- Fecha: 2026-11-25.
+- Estado: Adoptada dentro de la Fase 1.
+- Contexto: El plan exige detectar cambios en el impacto de la eliminación desde que el usuario lo revisó.
+- Decisión: Representar el estado visible de la vista previa con un `ETag` y exigirlo en `If-Match`. En la transacción se bloquean al usuario, sus salas y las membresías candidatas, se reconstruye la vista y se revalidan las decisiones.
+- Alternativas consideradas: Comparar solo la lista de decisiones o guardar una copia temporal de cada vista previa.
+- Justificación: La versión detecta cambios incluso cuando las decisiones siguen teniendo una forma válida y mantiene el cuerpo JSON definido por el plan.
+- Consecuencias: Un cambio o una decisión inválida devuelve `409`. El frontend vuelve a mostrar la vista previa. La fase de salas deberá respetar el orden de bloqueo al modificar su propiedad y membresías.
+- Archivos afectados: `backend/app/users/`, `frontend/src/features/account/`.

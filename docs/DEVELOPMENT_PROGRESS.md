@@ -3,10 +3,10 @@
 ## Estado general
 
 - Fase actual: Fase 1 — Base de datos, autenticación y eliminación de cuenta.
-- Estado: Parcialmente completada. Esquema y autenticación verificados con PostgreSQL y navegador.
+- Estado: Completada — Pendiente de aprobación.
 - Última actualización: 2026-11-25.
-- Última tarea completada: registro, inicio y cierre de sesión, recuperación tras recarga y rutas protegidas.
-- Próxima tarea pendiente: perfil, cambio de contraseña y eliminación transaccional de cuenta.
+- Última tarea completada: perfil, cambio de contraseña y eliminación transaccional de cuenta.
+- Próxima tarea pendiente: Fase 2 — Gestión de salas, códigos únicos y roles locales, tras autorización.
 - Aprobación para avanzar: Fase 1 autorizada explícitamente. Fase 2 pendiente.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
@@ -34,13 +34,13 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 - [x] F1-03 · Implementar registro y hashing de contraseñas.
 - [x] F1-04 · Implementar login y sesiones.
 - [x] F1-05 · Implementar autorización global y CSRF.
-- [ ] F1-06 · Implementar perfil y cambio de contraseña.
-- [ ] F1-07 · Implementar previsualización de eliminación.
-- [ ] F1-08 · Implementar eliminación y transferencias transaccionales.
+- [x] F1-06 · Implementar perfil y cambio de contraseña.
+- [x] F1-07 · Implementar previsualización de eliminación.
+- [x] F1-08 · Implementar eliminación y transferencias transaccionales.
 - [x] F1-09 · Crear pantallas Login y Registro.
 - [x] F1-10 · Implementar AuthProvider y rutas protegidas.
-- [ ] F1-11 · Crear pantalla Ajustes y confirmaciones.
-- [ ] F1-12 · Ejecutar pruebas de autenticación e integridad.
+- [x] F1-11 · Crear pantalla Ajustes y confirmaciones.
+- [x] F1-12 · Ejecutar pruebas de autenticación e integridad.
 
 ## Fase 2 — Salas, códigos y roles
 
@@ -120,10 +120,9 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Pruebas pendientes
 
-- Pruebas de autenticación, perfil y eliminación de cuenta por API y navegador.
 - Arranque de Compose, validación de Nginx, prueba del parser en el contenedor y ejecución de GitHub Actions.
 
 ## Próximos pasos
 
-- Continuar con los bloques pendientes de Fase 1.
+- Iniciar la Fase 2 cuando esté autorizada explícitamente.
 - Completar las verificaciones pendientes de infraestructura cuando el entorno lo permita.
