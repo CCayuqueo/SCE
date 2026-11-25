@@ -1,0 +1,10 @@
+*
+!backend/
+!backend/requirements.txt
+!backend/app/
+!backend/app/**
+!backend/alembic.ini
+!backend/migrations/
+!backend/migrations/**
+!horario_parser.py
+**/__pycache__

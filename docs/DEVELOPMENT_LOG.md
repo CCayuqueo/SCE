@@ -216,3 +216,39 @@ Fase 2 completada — Pendiente de aprobación.
 
 ### Próximo paso
 Fase 3, auditoría e integración del parser y grilla editable, tras autorización explícita.
+
+## 2026-11-25 — Fase 3 — Extracción determinista y horario editable
+
+### Objetivo
+Completar F3-01 a F3-12 tras la autorización explícita de la fase.
+
+### Cambios implementados
+- Se reutilizó el parser original. Se auditaron entrada por ruta, JSON de ocupaciones, control de grilla incompleta y ausencia de archivos secundarios.
+- Se añadieron validación PNG/JPEG, límites de cuerpo y píxeles, subproceso acotado, directorio temporal privado y normalización a 70 celdas.
+- La API persiste borradores, confirma versiones, protege el acceso y descarta resultados si la sesión, membresía o versión cambian durante la extracción.
+- Se añadió la grilla de Mi horario, con vista previa, edición, descarte, avisos, confirmación, reemplazo y eliminación.
+
+### Archivos creados
+- `backend/app/image_processing/`, `backend/app/schedules/`, `backend/tests/test_image_processing.py`, `backend/tests/test_schedules.py`, `backend/tests/fixtures/schedule_reference.json` y `frontend/src/features/schedules/`.
+
+### Archivos modificados
+- Configuración y registro de rutas del backend, Dockerfile, Compose, Nginx y CI. Cliente HTTP, enrutamiento y navegación de sala en frontend. README y seguimiento técnico. Se revisó AGENTS.md.
+
+### Decisiones técnicas
+- ADR-007 documenta el subproceso y la revalidación después de extraer. El juego de referencia de las seis capturas se obtuvo leyendo los colores dentro de cada celda en posiciones auditadas, de forma independiente a la salida del parser.
+
+### Pruebas realizadas
+- Se verificaron las coordenadas de ocupación de las seis imágenes y los casos de grilla vacía, recorte incompleto, formato no autorizado, píxeles, carga excesiva, salida inválida y limpieza ante timeout.
+- Pasaron 33 pruebas de backend con PostgreSQL, dos de frontend, Ruff, ESLint, Prettier, compilación y `alembic check`.
+- Playwright temporal verificó vista previa, carga, grilla de 70 celdas, aviso de navegación, descarte, guardado, recarga, reemplazo y eliminación.
+- El parser original, medido en el proceso local después de calentarlo, tardó entre 67,0 y 92,5 ms por PNG, sin contar el arranque del subproceso.
+
+### Problemas encontrados
+- Las conversiones JPEG 4:2:0 perdieron líneas de la grilla. Una captura JPEG 4:4:4 de alta calidad conservó las coordenadas en la prueba. Se recomienda PNG y se devuelve 422 al no detectar una grilla compatible.
+- Se validó la configuración de Compose y el YAML del workflow. La ejecución completa de Docker y GitHub sigue pendiente.
+
+### Estado
+Fase 3 completada — Pendiente de aprobación.
+
+### Próximo paso
+Fase 4, superposición e inspección de disponibilidad, tras autorización explícita.

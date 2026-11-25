@@ -137,6 +137,12 @@ export function RoomPage() {
               <span>
                 Código{" "}
                 <code className="rounded bg-slate-100 px-2 py-1">
+                  <Link
+                    className="mt-3 inline-block text-blue-800 underline"
+                    to={`/app/salas/${roomId}/mi-horario`}
+                  >
+                    Mi horario
+                  </Link>
                   {room.data.code}
                 </code>
               </span>

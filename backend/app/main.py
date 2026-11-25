@@ -12,13 +12,21 @@ from app.auth.router import router as auth_router
 from app.core.config import Settings
 from app.core.database import make_engine
 from app.core.errors import ApiError, handle_api_error, handle_validation_error
+from app.image_processing.adapter import ImageProcessor
+from app.image_processing.upload_limit import (
+    LimitUploadBody,
+    UploadBodyTooLarge,
+    handle_large_upload,
+)
 from app.rooms.router import router as rooms_router
+from app.schedules.router import router as schedules_router
 from app.users.router import router as users_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.settings = Settings()
+    app.state.image_processor = ImageProcessor(app.state.settings)
     app.state.auth_rate_limit = AuthRateLimiter()
     engine = make_engine(app.state.settings)
     app.state.db = engine
@@ -30,10 +38,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(title="SRC", version="1.0.0", lifespan=lifespan)
 app.add_exception_handler(ApiError, handle_api_error)
+app.add_exception_handler(UploadBodyTooLarge, handle_large_upload)
+app.add_middleware(LimitUploadBody)
 app.add_exception_handler(RequestValidationError, handle_validation_error)
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(rooms_router)
+app.include_router(schedules_router)
 
 
 @app.get("/api/v1/health/live")

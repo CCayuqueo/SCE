@@ -2,7 +2,7 @@
 
 SRC es una aplicación web para compartir horarios académicos en salas y analizar la disponibilidad semanal del grupo. El MVP contempla cuentas y sesiones, roles por sala, revisión y confirmación de horarios, y una vista consolidada con pesos de ocupación. Su alcance termina en el análisis de disponibilidad.
 
-SRC incluye registro, sesiones, ajustes de cuenta y gestión de salas con roles locales. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
+SRC incluye registro, sesiones, ajustes de cuenta y gestión de salas con roles locales y horarios editables. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
 
 ## Arquitectura y requisitos
 
@@ -80,6 +80,25 @@ Los demás integrantes pueden abandonar la sala desde su detalle.
 
 La capacidad predeterminada es de 100 integrantes por sala, incluido el propietario.
 Puedes ajustarla con `MAX_ROOM_MEMBERS` en el entorno del backend o en `.env` si usas Compose.
+
+## Horario personal
+
+Abre una sala y entra en **Mi horario**. Selecciona una captura que muestre las
+siete columnas y los diez bloques completos. Se recomienda PNG. La API también
+acepta JPEG, pero el parser puede rechazar los que pierden las líneas finas al
+comprimir o reescalar. Las seis conversiones JPEG 4:2:0 ensayadas perdieron la
+grilla. Una conversión 4:4:4 de alta calidad conserva sus coordenadas en la
+prueba de compatibilidad.
+
+La carga exitosa crea un borrador. Puedes cambiar cada celda libre u ocupada,
+descartar los cambios locales o guardar y confirmar. Reemplazar un horario
+confirmado requiere confirmación previa. La captura se elimina al terminar el
+procesamiento. Si una carga falla, se conserva el horario anterior.
+
+El límite inicial es de 5 MiB y 12 millones de píxeles. La API anuncia el
+límite de bytes al consultar el horario. Se configura con `MAX_UPLOAD_MB`
+(hasta 10 MiB), `MAX_IMAGE_PIXELS`, `IMAGE_PROCESSING_TIMEOUT_SECONDS` e
+`IMAGE_PROCESSING_CONCURRENCY`.
 
 ## Migraciones y pruebas
 

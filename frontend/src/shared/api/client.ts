@@ -14,6 +14,7 @@ export class ApiError extends Error {
 type RequestOptions = {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   body?: object;
+  form?: FormData;
   signal?: AbortSignal;
   csrfToken?: string;
   ifMatch?: string;
@@ -32,7 +33,8 @@ export async function requestJson<T>(
 
   const response = await fetch(`${baseUrl}${path}`, {
     method: options.method ?? "GET",
-    body: options.body ? JSON.stringify(options.body) : undefined,
+    body:
+      options.form ?? (options.body ? JSON.stringify(options.body) : undefined),
     credentials: "same-origin",
     headers,
     signal: options.signal,

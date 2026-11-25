@@ -85,9 +85,17 @@ jobs:
       - name: Verificar compatibilidad del parser en la imagen Python
         run: |
           docker compose run --rm --no-deps \
-            -v "$PWD/horario_parser.py:/parser/horario_parser.py:ro" \
             -v "$PWD/images:/parser/images:ro" \
-            backend python /parser/horario_parser.py /parser/images > /dev/null
+            backend python -c '
+          from pathlib import Path
+          from app.core.config import Settings
+          from app.image_processing.adapter import ImageProcessor
+
+          files = sorted(Path("/parser/images").glob("*.png"))
+          processor = ImageProcessor(Settings())
+          counts = [sum(cell.is_occupied for cell in processor.process(file.read_bytes())) for file in files]
+          assert counts == [15, 17, 17, 16, 13, 18], counts
+          '
       - if: failure()
         run: docker compose logs
       - if: always()

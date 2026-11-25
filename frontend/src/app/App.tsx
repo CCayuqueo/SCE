@@ -1,3 +1,4 @@
+import { SchedulePage } from "@/features/schedules/SchedulePage";
 import { RoomPage } from "@/features/rooms/RoomPage";
 import { RoomsPage } from "@/features/rooms/RoomsPage";
 import { useQuery } from "@tanstack/react-query";
@@ -57,6 +58,10 @@ export function App() {
         <Route path="/app/ajustes" element={<SettingsPage />} />
         <Route path="/app/salas" element={<RoomsPage />} />
         <Route path="/app/salas/:roomId" element={<RoomPage />} />
+        <Route
+          path="/app/salas/:roomId/mi-horario"
+          element={<SchedulePage />}
+        />
       </Route>
       <Route
         path="*"

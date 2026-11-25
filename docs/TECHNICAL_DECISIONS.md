@@ -65,3 +65,14 @@
 - Justificación: El bloqueo local serializa cambios de una sala sin detener operaciones de otras salas. Las restricciones existentes siguen siendo la garantía final.
 - Consecuencias: Las futuras operaciones que cambien membresías deben seguir el orden usuario, sala y membresía y respetar las restricciones diferibles.
 - Archivos afectados: `backend/app/rooms/` y `backend/app/auth/dependencies.py`.
+
+## ADR-007 — Procesador externo y revalidación del borrador
+
+- Fecha: 2026-11-25.
+- Estado: Adoptada en Fase 3.
+- Contexto: El parser devuelve coordenadas ocupadas y debe ejecutar OpenCV sin conservar la captura ni bloquear la base durante el análisis.
+- Decisión: Reutilizar `horario_parser.py` desde un proceso Python separado con límites de tiempo, memoria y paralelismo. El adaptador verifica formato, dimensiones y contrato de salida antes de completar las 70 celdas. La API captura la identidad de la membresía y el horario, cierra la transacción, procesa y vuelve a comprobar identidad, sesión y versión antes de persistir.
+- Alternativas consideradas: Ejecutar OpenCV en el proceso web o mantener bloqueada la sala durante la extracción.
+- Justificación: Limita el impacto de archivos problemáticos y deja disponibles las operaciones de cuenta, sala y horario durante el procesamiento.
+- Consecuencias: La aplicación usa `If-Match` con el identificador y la versión para detectar también el borrado y recreación de un horario. El formato recomendado es PNG. La captura se elimina incluso si falla la extracción.
+- Archivos afectados: `backend/app/image_processing/`, `backend/app/schedules/` y `frontend/src/features/schedules/`.

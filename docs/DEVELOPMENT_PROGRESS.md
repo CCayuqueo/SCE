@@ -2,12 +2,12 @@
 
 ## Estado general
 
-- Fase actual: Fase 2 — Gestión de salas, códigos únicos y roles locales.
+- Fase actual: Fase 3 — Procesamiento de imágenes y horarios.
 - Estado: Completada — Pendiente de aprobación.
 - Última actualización: 2026-11-25.
-- Última tarea completada: salas, membresías, roles, transferencias y verificación integral.
-- Próxima tarea pendiente: Fase 3 — Procesamiento de imágenes y horarios, tras autorización.
-- Aprobación para avanzar: Fase 2 autorizada explícitamente. Fase 3 pendiente.
+- Última tarea completada: extracción determinista, borradores y grilla editable.
+- Próxima tarea pendiente: Fase 4 — Motor de superposición, tras autorización.
+- Aprobación para avanzar: Fase 3 autorizada explícitamente. Fase 4 pendiente.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
 La tabla detallada «0.1. Tareas de infraestructura» reutiliza F0-01 a F0-09 con significados distintos. La
@@ -75,18 +75,18 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Fase 3 — Procesamiento de imágenes y horarios
 
-- [ ] F3-01 · Auditar script existente y sus dependencias.
-- [ ] F3-02 · Crear conjunto de capturas de prueba.
-- [ ] F3-03 · Definir contrato del procesador y adaptador.
-- [ ] F3-04 · Implementar worker y límites de ejecución.
-- [ ] F3-05 · Implementar validación y limpieza de archivos.
-- [ ] F3-06 · Implementar normalización de 70 celdas.
-- [ ] F3-07 · Implementar endpoint de carga.
-- [ ] F3-08 · Implementar consultas, edición y versiones.
-- [ ] F3-09 · Construir componente reutilizable de grilla.
-- [ ] F3-10 · Construir interfaz de carga y corrección.
-- [ ] F3-11 · Implementar guardado, descarte y manejo de errores.
-- [ ] F3-12 · Ejecutar pruebas del parser y del flujo completo.
+- [x] F3-01 · Auditar script existente y sus dependencias.
+- [x] F3-02 · Crear conjunto de capturas de prueba.
+- [x] F3-03 · Definir contrato del procesador y adaptador.
+- [x] F3-04 · Implementar worker y límites de ejecución.
+- [x] F3-05 · Implementar validación y limpieza de archivos.
+- [x] F3-06 · Implementar normalización de 70 celdas.
+- [x] F3-07 · Implementar endpoint de carga.
+- [x] F3-08 · Implementar consultas, edición y versiones.
+- [x] F3-09 · Construir componente reutilizable de grilla.
+- [x] F3-10 · Construir interfaz de carga y corrección.
+- [x] F3-11 · Implementar guardado, descarte y manejo de errores.
+- [x] F3-12 · Ejecutar pruebas del parser y del flujo completo.
 
 ## Fase 4 — Motor de superposición
 
@@ -141,5 +141,5 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Próximos pasos
 
-- Iniciar la Fase 3 cuando esté autorizada explícitamente.
+- Iniciar la Fase 4 cuando esté autorizada explícitamente.
 - Completar las verificaciones pendientes de infraestructura cuando el entorno lo permita.
