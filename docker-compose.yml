@@ -30,7 +30,7 @@ services:
       # FastAPI solo se alcanza dentro de la red privada. Nginx sobrescribe X-Forwarded-For.
       FORWARDED_ALLOW_IPS: "*"
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-src}:${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}@database:5432/${POSTGRES_DB:-src}
-    command: ["sh", "-c", "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+    command: ["sh", "-c", "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --no-access-log"]
     depends_on:
       database:
         condition: service_healthy

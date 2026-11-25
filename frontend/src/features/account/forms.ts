@@ -1,6 +1,5 @@
-export const field = "mt-1 w-full rounded border border-slate-400 px-3 py-2";
-export const button =
-  "rounded bg-blue-700 px-4 py-2 font-medium text-white disabled:opacity-50";
+export const field = "src-field";
+export const button = "src-primary";
 export const danger =
   "rounded bg-red-800 px-4 py-2 font-medium text-white disabled:opacity-50";
 

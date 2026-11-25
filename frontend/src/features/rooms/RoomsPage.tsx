@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { type FormEvent } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import { useAuth } from "@/features/auth/context";
 import {
@@ -50,7 +50,10 @@ function RoomList({ title, rooms }: { title: string; rooms: Room[] }) {
 
 export function RoomsPage() {
   const { session } = useAuth();
-  const [mode, setMode] = useState<"create" | "join" | null>(null);
+  const [search, setSearch] = useSearchParams();
+  const selection = search.get("accion");
+  const mode =
+    selection === "crear" ? "create" : selection === "unirse" ? "join" : null;
   const navigate = useNavigate();
   const cache = useQueryClient();
   const rooms = useQuery({
@@ -87,7 +90,9 @@ export function RoomsPage() {
 
   function setDialog(next: typeof mode) {
     mutation.reset();
-    setMode(next);
+    setSearch(next ? { accion: next === "create" ? "crear" : "unirse" } : {}, {
+      replace: true,
+    });
   }
 
   const values = rooms.data ?? [];

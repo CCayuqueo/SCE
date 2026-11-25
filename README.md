@@ -25,7 +25,7 @@ Configura `POSTGRES_PASSWORD` en `.env` con una contraseña propia. Puedes gener
 docker compose up --build
 ```
 
-Abre [http://localhost:3000](http://localhost:3000). La página consulta la API y muestra si PostgreSQL está disponible. También puedes comprobar los servicios desde la terminal:
+Abre [http://localhost:3000](http://localhost:3000) para ver Inicio. Comprueba los servicios desde la terminal:
 
 ```bash
 curl -fsS http://localhost:3000/api/v1/health/live
@@ -46,7 +46,7 @@ source .venv/bin/activate
 python -m pip install -r backend/requirements-dev.txt
 cd backend
 alembic upgrade head
-APP_ORIGIN=http://localhost:5173 uvicorn app.main:app --reload --port 8000
+APP_ORIGIN=http://localhost:5173 uvicorn app.main:app --reload --port 8000 --no-access-log
 ```
 
 En otra terminal, desde la raíz:
@@ -145,12 +145,28 @@ python horario_parser.py "images/Captura de pantalla_2026-11-25_15-04-01.png"
 python horario_parser.py images
 ```
 
+## Pruebas de flujo y producción
+
+Ejecuta Playwright contra un entorno de pruebas dedicado. La suite crea usuarios,
+salas y horarios ficticios y elimina cuentas como parte de la verificación.
+
+```bash
+cd frontend
+npm ci
+npx playwright install chromium firefox
+SRC_E2E_URL=http://localhost:3000 npm run test:e2e
+```
+
+Para producción consulta [HTTPS, despliegue y recuperación](docs/deployment.md).
+Los [resultados y datos de prueba](docs/testing.md) describen lo que ya se verificó.
+
 ## Estructura y documentación
 
 - `frontend/`: aplicación web y pruebas de cliente.
 - `backend/`: API, configuración, migraciones y pruebas Python.
 - `infrastructure/nginx/`: configuración del proxy.
 - `horario_parser.py` e `images/`: procesador determinista y capturas de referencia existentes.
+- [Arquitectura](docs/architecture.md), [base de datos](docs/database.md), [API](docs/api.md), [reglas de negocio](docs/business-rules.md) y [cambios](CHANGELOG.md).
 - [Plan maestro](SRC_Plan_Maestro_Desarrollo_V1.md), [bitácora](docs/DEVELOPMENT_LOG.md), [estado](docs/DEVELOPMENT_PROGRESS.md) y [decisiones técnicas](docs/TECHNICAL_DECISIONS.md).
 
 **Equipo desarrollador:** composición pendiente de confirmación.

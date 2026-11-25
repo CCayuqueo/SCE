@@ -288,3 +288,42 @@ Fase 4 completada — Pendiente de aprobación.
 
 ### Próximo paso
 Fase 5, Inicio, Guía, pulido y QA, tras autorización explícita.
+
+## 2026-11-25 — Fase 5 — Interfaz, pruebas de lanzamiento y operación
+
+### Objetivo
+Preparar la versión para aceptación y despliegue sin publicar ni operar bases reales.
+
+### Cambios implementados
+- Inicio público y privado, navegación adaptable, acceso directo a formularios de salas y guía con una captura compatible.
+- Suite Playwright registrada en el repositorio y configurada en CI.
+- Perfil Compose de producción, HTTPS, límites del proxy, logs con identificador de solicitud y script de respaldo.
+- Manuales de API, arquitectura, datos, reglas, pruebas, despliegue y recuperación.
+
+### Archivos creados
+- `frontend/src/app/AppShell.tsx`, `frontend/src/features/home/`, `frontend/src/features/guide/`, `frontend/e2e/` y configuración Playwright.
+- `docker-compose.production.yml`, configuración de proxy, `infrastructure/scripts/backup-db.sh`, middleware y prueba de logs.
+- Manuales en `docs/` y `CHANGELOG.md`.
+
+### Archivos modificados
+- Entrada y estilos del frontend, formularios y flujos de sala, dependencias de pruebas, backend, Compose, CI, README y seguimiento. Se revisó AGENTS.md.
+
+### Decisiones técnicas
+- ADR-009 documenta el TLS en el proxy y la correlación de logs sin datos privados.
+
+### Comandos y pruebas
+- 37 pruebas Pytest, dos de Vitest, Playwright con dos casos en Chrome y dos en Firefox, compilación y controles de formato.
+- El flujo íntegro de tres cuentas y la navegación móvil pasaron sobre TLS local. Se comprobó redirección 308 y HSTS con curl.
+- Auditorías npm y pip-audit sin vulnerabilidades conocidas en los manifiestos revisados.
+- Respaldo PostgreSQL y restauración en una base vacía. Coincidieron revisión, recuentos y huella de 7.630 celdas.
+- Configuración Compose validada, incluidos los ajustes de producción. El YAML del workflow y el script de respaldo se validaron localmente.
+
+### Problemas encontrados
+- No hay créditos de equipo confirmados ni destino de staging. No se ejecutó la aceptación con usuarios reales.
+- El entorno sigue sin acceso al daemon de Docker. Las verificaciones HTTPS usaron Nginx local con un certificado temporal. Pendientes Edge, auditoría de imágenes y ejecución de CI en GitHub.
+
+### Estado
+Fase 5 parcialmente completada. Candidata local verificada, publicación pendiente.
+
+### Próximo paso
+Confirmar créditos, validar la infraestructura real y realizar la aceptación antes de publicar.

@@ -87,3 +87,14 @@
 - Justificación: La sentencia usa una misma vista de PostgreSQL y el cálculo no depende de cachés. Las ediciones y eliminaciones se reflejan al consultar de nuevo.
 - Consecuencias: Un borrador, un horario ausente y un horario incompleto no aportan disponibilidad. El mapa y el panel pueden reflejar instantes distintos. La interfaz refresca el mapa si detecta una diferencia al consultar el bloque.
 - Archivos afectados: `backend/app/overlap/`, `frontend/src/features/overlap/`.
+
+## ADR-009 — TLS en el proxy y registros sin datos de solicitud
+
+- Fecha: 2026-11-25.
+- Estado: Adoptada en Fase 5.
+- Contexto: Las sesiones necesitan transporte seguro en producción y los registros deben ayudar a diagnosticar errores sin exponer credenciales.
+- Decisión: Terminar TLS en Nginx, mantener PostgreSQL y FastAPI en la red interna y emitir logs JSON con un identificador compartido. La configuración exige que el origen de la aplicación sea HTTPS cuando se configura producción.
+- Alternativas consideradas: Exponer FastAPI y resolver HTTPS en cada servicio o registrar solicitudes completas para diagnosticar errores.
+- Justificación: Un mismo origen simplifica las cookies. El identificador permite correlacionar solicitudes sin registrar rutas, consultas, cuerpos o cabeceras privadas.
+- Consecuencias: El operador aprovisiona y renueva certificado y clave. Las pruebas locales usan certificados temporales. La operación debe configurar la retención de logs y respaldos.
+- Archivos afectados: `docker-compose.production.yml`, `infrastructure/nginx/`, `backend/app/core/request_log.py` y `docs/deployment.md`.

@@ -2,12 +2,12 @@
 
 ## Estado general
 
-- Fase actual: Fase 4 — Motor de superposición y vista administrativa.
-- Estado: Completada — Pendiente de aprobación.
+- Fase actual: Fase 5 — Inicio, Guía, pulido y QA.
+- Estado: Parcialmente completada. Candidata local verificada, lanzamiento pendiente.
 - Última actualización: 2026-11-25.
-- Última tarea completada: cálculo de pesos, mapa de calor, inspección y horarios individuales.
-- Próxima tarea pendiente: Fase 5 — Inicio, Guía, pulido y QA, tras autorización.
-- Aprobación para avanzar: Fase 4 autorizada explícitamente. Fase 5 pendiente.
+- Última tarea completada: experiencia de uso, E2E en Chrome y Firefox, TLS local y restauración de respaldo.
+- Próxima tarea pendiente: validar staging, completar créditos y aceptar la versión con usuarios reales.
+- Aprobación para avanzar: Fase 5 autorizada. Publicación pendiente de verificación y aprobación.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
 La tabla detallada «0.1. Tareas de infraestructura» reutiliza F0-01 a F0-09 con significados distintos. La
@@ -121,16 +121,31 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Fase 5 — Inicio, Guía, pulido y QA
 
-- [ ] F5-01 · Construir presentación pública y privada de SRC.
+- [x] F5-01 · Construir presentación pública y privada de SRC.
 - [ ] F5-02 · Incorporar equipo desarrollador.
-- [ ] F5-03 · Finalizar barra lateral y layout adaptable.
-- [ ] F5-04 · Construir Guía / Cómo usar.
-- [ ] F5-05 · Unificar estilos y estados visuales.
-- [ ] F5-06 · Verificar accesibilidad y diseño responsive.
-- [ ] F5-07 · Automatizar pruebas E2E.
-- [ ] F5-08 · Ejecutar pruebas de seguridad y concurrencia.
+- [x] F5-03 · Finalizar barra lateral y layout adaptable.
+- [x] F5-04 · Construir Guía / Cómo usar.
+- [x] F5-05 · Unificar estilos y estados visuales.
+- [x] F5-06 · Verificar accesibilidad y diseño responsive.
+- [x] F5-07 · Automatizar pruebas E2E.
+- [x] F5-08 · Ejecutar pruebas de seguridad y concurrencia.
 - [ ] F5-09 · Preparar despliegue, HTTPS y respaldos.
 - [ ] F5-10 · Ejecutar pruebas de aceptación y documentar release.
+### Criterios de aceptación de Fase 5
+
+| ID | Estado | Evidencia |
+|---|---|---|
+| CA5-01 | Verificado localmente | SRC visible en Inicio público y privado. |
+| CA5-02 | Parcial | Sección incluida. Nombres y créditos de autoría sin confirmar. |
+| CA5-03 | Verificado | Playwright verifica Inicio, Salas y Ajustes en ese orden. |
+| CA5-04 | Verificado | La guía queda al final y se puede abrir por teclado. |
+| CA5-05 | Verificado | Guía con captura de referencia y explicación de edición, confirmación y análisis. |
+| CA5-06 | Verificado localmente | Flujo crítico y navegación móvil pasan en Chrome y Firefox. Edge pendiente. |
+| CA5-07 | Verificado localmente | Playwright pasa el flujo de tres cuentas en ambos navegadores. |
+| CA5-08 | Parcial | npm y pip-audit sin hallazgos. Faltan imágenes de producción y revisión en staging. |
+| CA5-09 | Parcial | Redirección 308, HSTS y flujos TLS verificados localmente. Falta el dominio de staging. |
+| CA5-10 | Verificado | Documentación de operación, despliegue, respaldo y recuperación disponible. |
+
 ### Criterios de aceptación de Fase 0
 
 | ID | Estado | Evidencia |
@@ -146,7 +161,8 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 ## Problemas pendientes
 
 - Docker instalado, pero el usuario del entorno carece de acceso al daemon.
-- No hay remoto GitHub configurado.
+- No hay remoto GitHub ni destino de staging configurados.
+- Créditos del equipo pendientes de confirmación.
 
 ## Dependencias pendientes
 
@@ -154,9 +170,9 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Pruebas pendientes
 
-- Arranque de Compose, validación de Nginx, prueba del parser en el contenedor y ejecución de GitHub Actions.
+- Arranque completo de Compose y ejecución de GitHub Actions.
+- Edge, validación del dominio público, respaldo programado y aceptación con usuarios reales.
 
 ## Próximos pasos
 
-- Iniciar la Fase 5 cuando esté autorizada explícitamente.
-- Completar las verificaciones pendientes de infraestructura cuando el entorno lo permita.
+- Validar imágenes, HTTPS y migraciones en staging, y registrar la aceptación con usuarios reales antes de publicar.

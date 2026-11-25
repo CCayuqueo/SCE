@@ -10,3 +10,5 @@
 !infrastructure/
 !infrastructure/nginx/
 !infrastructure/nginx/default.conf
+!infrastructure/nginx/src.locations
+!infrastructure/nginx/00-src-log.conf

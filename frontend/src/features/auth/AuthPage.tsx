@@ -3,8 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 
 import { useAuth } from "./context";
 
-const inputClass =
-  "mt-1 w-full rounded border border-slate-400 bg-white px-3 py-2";
+const inputClass = "src-field";
 
 export function AuthPage({ mode }: { mode: "login" | "register" }) {
   const auth = useAuth();
@@ -95,11 +94,7 @@ export function AuthPage({ mode }: { mode: "login" | "register" }) {
             {error}
           </p>
         )}
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded bg-blue-700 px-4 py-2 font-medium text-white disabled:opacity-60"
-        >
+        <button type="submit" disabled={pending} className="src-primary">
           {pending ? "Enviando…" : title}
         </button>
       </form>

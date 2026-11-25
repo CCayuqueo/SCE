@@ -12,6 +12,7 @@ from app.auth.router import router as auth_router
 from app.core.config import Settings
 from app.core.database import make_engine
 from app.core.errors import ApiError, handle_api_error, handle_validation_error
+from app.core.request_log import log_request
 from app.image_processing.adapter import ImageProcessor
 from app.image_processing.upload_limit import (
     LimitUploadBody,
@@ -41,6 +42,7 @@ app = FastAPI(title="SRC", version="1.0.0", lifespan=lifespan)
 app.add_exception_handler(ApiError, handle_api_error)
 app.add_exception_handler(UploadBodyTooLarge, handle_large_upload)
 app.add_middleware(LimitUploadBody)
+app.middleware("http")(log_request)
 app.add_exception_handler(RequestValidationError, handle_validation_error)
 app.include_router(auth_router)
 app.include_router(users_router)
