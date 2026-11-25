@@ -2,12 +2,12 @@
 
 ## Estado general
 
-- Fase actual: Fase 3 — Procesamiento de imágenes y horarios.
+- Fase actual: Fase 4 — Motor de superposición y vista administrativa.
 - Estado: Completada — Pendiente de aprobación.
 - Última actualización: 2026-11-25.
-- Última tarea completada: extracción determinista, borradores y grilla editable.
-- Próxima tarea pendiente: Fase 4 — Motor de superposición, tras autorización.
-- Aprobación para avanzar: Fase 3 autorizada explícitamente. Fase 4 pendiente.
+- Última tarea completada: cálculo de pesos, mapa de calor, inspección y horarios individuales.
+- Próxima tarea pendiente: Fase 5 — Inicio, Guía, pulido y QA, tras autorización.
+- Aprobación para avanzar: Fase 4 autorizada explícitamente. Fase 5 pendiente.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
 La tabla detallada «0.1. Tareas de infraestructura» reutiliza F0-01 a F0-09 con significados distintos. La
@@ -90,17 +90,34 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Fase 4 — Motor de superposición
 
-- [ ] F4-01 · Implementar recuperación consistente de horarios.
-- [ ] F4-02 · Implementar algoritmo de pesos.
-- [ ] F4-03 · Implementar métricas de cobertura y disponibilidad.
-- [ ] F4-04 · Implementar endpoint consolidado.
-- [ ] F4-05 · Implementar endpoint de detalle por celda.
-- [ ] F4-06 · Implementar consulta individual de horarios.
-- [ ] F4-07 · Construir mapa de calor reutilizable.
-- [ ] F4-08 · Construir selector de miembros y vista individual.
-- [ ] F4-09 · Construir panel de inspección de bloques.
-- [ ] F4-10 · Implementar actualización e invalidación de datos.
-- [ ] F4-11 · Verificar pesos, permisos y rendimiento.
+- [x] F4-01 · Implementar recuperación consistente de horarios.
+- [x] F4-02 · Implementar algoritmo de pesos.
+- [x] F4-03 · Implementar métricas de cobertura y disponibilidad.
+- [x] F4-04 · Implementar endpoint consolidado.
+- [x] F4-05 · Implementar endpoint de detalle por celda.
+- [x] F4-06 · Implementar consulta individual de horarios.
+- [x] F4-07 · Construir mapa de calor reutilizable.
+- [x] F4-08 · Construir selector de miembros y vista individual.
+- [x] F4-09 · Construir panel de inspección de bloques.
+- [x] F4-10 · Implementar actualización e invalidación de datos.
+- [x] F4-11 · Verificar pesos, permisos y rendimiento.
+
+### Criterios de aceptación de Fase 4
+
+| ID | Estado | Evidencia |
+|---|---|---|
+| CA4-01 | Verificado | El backend y el navegador mostraron 70 celdas. |
+| CA4-02 | Verificado | Pesos de referencia: 2, 3, 0, 1 y 2. |
+| CA4-03 | Verificado | Invariante de peso menor o igual al total confirmado para las 70 celdas. |
+| CA4-04 | Verificado | Cero distingue disponibilidad total de ausencia de confirmación. |
+| CA4-05 | Verificado | Borradores y horarios ausentes se cuentan aparte. |
+| CA4-06 | Verificado | Cada bloque visible muestra el número de ocupados. |
+| CA4-07 | Verificado | Un ocupado entre dos integrantes tiene color del tramo de 50 %. |
+| CA4-08 | Verificado | El panel y la API separan ocupados, disponibles y pendientes. |
+| CA4-09 | Verificado | La grilla confirmada se presenta en solo lectura y un horario ausente no muestra grilla. |
+| CA4-10 | Verificado | La edición confirmada cambió el peso en la siguiente consulta. |
+| CA4-11 | Verificado | Al expulsar a un miembro se restó su aporte. |
+| CA4-12 | Verificado | Un miembro regular recibió 403 en API y no pudo abrir la vista administrativa. |
 
 ## Fase 5 — Inicio, Guía, pulido y QA
 
@@ -141,5 +158,5 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Próximos pasos
 
-- Iniciar la Fase 4 cuando esté autorizada explícitamente.
+- Iniciar la Fase 5 cuando esté autorizada explícitamente.
 - Completar las verificaciones pendientes de infraestructura cuando el entorno lo permita.

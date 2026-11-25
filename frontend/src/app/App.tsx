@@ -4,6 +4,10 @@ import { RoomsPage } from "@/features/rooms/RoomsPage";
 import { useQuery } from "@tanstack/react-query";
 import { Link, Route, Routes } from "react-router-dom";
 
+import { AdminRoomRoute } from "@/features/overlap/AdminRoomRoute";
+import { IndividualPage } from "@/features/overlap/IndividualPage";
+import { OverlapPage } from "@/features/overlap/OverlapPage";
+
 import { getJson } from "@/shared/api/client";
 import { AccountHome } from "@/features/auth/AccountHome";
 import { SettingsPage } from "@/features/account/SettingsPage";
@@ -58,6 +62,16 @@ export function App() {
         <Route path="/app/ajustes" element={<SettingsPage />} />
         <Route path="/app/salas" element={<RoomsPage />} />
         <Route path="/app/salas/:roomId" element={<RoomPage />} />
+        <Route element={<AdminRoomRoute />}>
+          <Route
+            path="/app/salas/:roomId/superposicion"
+            element={<OverlapPage />}
+          />
+          <Route
+            path="/app/salas/:roomId/horarios"
+            element={<IndividualPage />}
+          />
+        </Route>
         <Route
           path="/app/salas/:roomId/mi-horario"
           element={<SchedulePage />}

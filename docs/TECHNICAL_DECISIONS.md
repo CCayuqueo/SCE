@@ -76,3 +76,14 @@
 - Justificación: Limita el impacto de archivos problemáticos y deja disponibles las operaciones de cuenta, sala y horario durante el procesamiento.
 - Consecuencias: La aplicación usa `If-Match` con el identificador y la versión para detectar también el borrado y recreación de un horario. El formato recomendado es PNG. La captura se elimina incluso si falla la extracción.
 - Archivos afectados: `backend/app/image_processing/`, `backend/app/schedules/` y `frontend/src/features/schedules/`.
+
+## ADR-008 — Superposición calculada desde una consulta consistente
+
+- Fecha: 2026-11-25.
+- Estado: Adoptada en Fase 4.
+- Contexto: Un resultado completo debe dar simultáneamente los pesos, la cobertura y los pendientes aunque cambien los horarios.
+- Decisión: Consultar en una sola sentencia las membresías vigentes y las celdas de horarios confirmados de la sala. La misma consulta comprueba el rol administrativo de quien solicita el resultado.
+- Alternativas consideradas: Consultas separadas de miembros y horarios, y una matriz persistida con invalidación.
+- Justificación: La sentencia usa una misma vista de PostgreSQL y el cálculo no depende de cachés. Las ediciones y eliminaciones se reflejan al consultar de nuevo.
+- Consecuencias: Un borrador, un horario ausente y un horario incompleto no aportan disponibilidad. El mapa y el panel pueden reflejar instantes distintos. La interfaz refresca el mapa si detecta una diferencia al consultar el bloque.
+- Archivos afectados: `backend/app/overlap/`, `frontend/src/features/overlap/`.

@@ -18,6 +18,7 @@ from app.image_processing.upload_limit import (
     UploadBodyTooLarge,
     handle_large_upload,
 )
+from app.overlap.router import router as overlap_router
 from app.rooms.router import router as rooms_router
 from app.schedules.router import router as schedules_router
 from app.users.router import router as users_router
@@ -45,6 +46,7 @@ app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(rooms_router)
 app.include_router(schedules_router)
+app.include_router(overlap_router)
 
 
 @app.get("/api/v1/health/live")

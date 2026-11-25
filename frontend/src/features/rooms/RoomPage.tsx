@@ -132,17 +132,38 @@ export function RoomPage() {
             {roles[room.data.current_user_role]} · {room.data.members_count}{" "}
             integrantes · {schedules[room.data.schedule_status]}
           </p>
+          <nav
+            aria-label="Horarios de la sala"
+            className="mt-3 flex flex-wrap gap-4"
+          >
+            <Link
+              to={`/app/salas/${roomId}/mi-horario`}
+              className="text-blue-800 underline"
+            >
+              Mi horario
+            </Link>
+            {canAdmin && (
+              <>
+                <Link
+                  to={`/app/salas/${roomId}/superposicion`}
+                  className="text-blue-800 underline"
+                >
+                  Superposición
+                </Link>
+                <Link
+                  to={`/app/salas/${roomId}/horarios`}
+                  className="text-blue-800 underline"
+                >
+                  Horarios individuales
+                </Link>
+              </>
+            )}
+          </nav>
           {room.data.code && (
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <span>
                 Código{" "}
                 <code className="rounded bg-slate-100 px-2 py-1">
-                  <Link
-                    className="mt-3 inline-block text-blue-800 underline"
-                    to={`/app/salas/${roomId}/mi-horario`}
-                  >
-                    Mi horario
-                  </Link>
                   {room.data.code}
                 </code>
               </span>

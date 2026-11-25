@@ -2,7 +2,7 @@
 
 SRC es una aplicación web para compartir horarios académicos en salas y analizar la disponibilidad semanal del grupo. El MVP contempla cuentas y sesiones, roles por sala, revisión y confirmación de horarios, y una vista consolidada con pesos de ocupación. Su alcance termina en el análisis de disponibilidad.
 
-SRC incluye registro, sesiones, ajustes de cuenta y gestión de salas con roles locales y horarios editables. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
+SRC incluye registro, sesiones, ajustes de cuenta y gestión de salas con roles locales, horarios editables y análisis de disponibilidad. El parser determinista se puede ejecutar por separado. Consulta el [estado de desarrollo](docs/DEVELOPMENT_PROGRESS.md) para ver las tareas y verificaciones pendientes.
 
 ## Arquitectura y requisitos
 
@@ -99,6 +99,19 @@ El límite inicial es de 5 MiB y 12 millones de píxeles. La API anuncia el
 límite de bytes al consultar el horario. Se configura con `MAX_UPLOAD_MB`
 (hasta 10 MiB), `MAX_IMAGE_PIXELS`, `IMAGE_PROCESSING_TIMEOUT_SECONDS` e
 `IMAGE_PROCESSING_CONCURRENCY`.
+
+## Superposición y horarios individuales
+
+Como propietario o administrador, abre una sala y entra en **Superposición**.
+Cada bloque muestra cuántos integrantes confirmados están ocupados. El color
+representa esa cantidad como proporción de todos los integrantes de la sala.
+Selecciona un bloque para ver las personas ocupadas, disponibles y pendientes.
+Un peso de cero solo indica disponibilidad total si todos confirmaron. La
+cobertura indica qué proporción tiene un horario confirmado.
+
+En **Horarios individuales** puedes elegir a un integrante y consultar su grilla
+confirmada en modo de solo lectura. Si tiene un borrador, se muestra su estado
+pendiente sin revelar sus celdas.
 
 ## Migraciones y pruebas
 

@@ -252,3 +252,39 @@ Fase 3 completada — Pendiente de aprobación.
 
 ### Próximo paso
 Fase 4, superposición e inspección de disponibilidad, tras autorización explícita.
+
+## 2026-11-25 — Fase 4 — Superposición e inspección de disponibilidad
+
+### Objetivo
+Completar F4-01 a F4-11 tras la autorización de la fase.
+
+### Cambios implementados
+- API administrativa con matriz de 70 pesos, cobertura e inspección por bloque a partir de una consulta consistente.
+- Mapa de calor, estado sin confirmaciones y listas de ocupados, disponibles y pendientes. Horarios individuales en solo lectura.
+- Actualización al entrar, recuperar el foco, pulsar Actualizar o transcurrir 30 segundos con la vista activa.
+- Se corrigió la navegación heredada de Mi horario para que también esté visible para miembros regulares.
+
+### Archivos creados
+- `backend/app/overlap/`, `backend/tests/test_overlap.py` y `frontend/src/features/overlap/`.
+
+### Archivos modificados
+- Registro de rutas backend y frontend, navegación de sala, README y seguimiento. Se revisó AGENTS.md.
+
+### Decisiones técnicas
+- ADR-008 documenta la consulta consistente y la reconciliación del panel con la matriz.
+
+### Comandos y pruebas
+- Pasaron 36 pruebas Pytest con PostgreSQL 17.12, dos pruebas Vitest, Ruff, ESLint, Prettier, TypeScript/Vite y `alembic check`.
+- La prueba matemática dio 2, 3, 0, 1 y 2. Se repitió tras edición, expulsión e ingreso de un usuario pendiente. Una modificación concurrente mostró el estado anterior íntegro hasta confirmar la escritura.
+- El p95 fue de 82,7 ms en 20 consultas locales con 100 integrantes confirmados y 7.000 celdas persistidas, usando TestClient y PostgreSQL local.
+- Playwright temporal comprobó permisos, carga y confirmación desde un miembro regular, la matriz, el color para 50 %, el panel y el selector individual.
+- `docker compose config -q` pasó. Quedan pendientes el arranque completo con Docker y la ejecución remota de CI.
+
+### Problemas encontrados
+- La prueba inicial del selector individual no encontró la etiqueta exacta. Se vinculó explícitamente la etiqueta con el control y la repetición pasó.
+
+### Estado
+Fase 4 completada — Pendiente de aprobación.
+
+### Próximo paso
+Fase 5, Inicio, Guía, pulido y QA, tras autorización explícita.
