@@ -3,10 +3,10 @@
 ## Estado general
 
 - Fase actual: Fase 5 — Inicio, Guía, pulido y QA.
-- Estado: Parcialmente completada. Candidata verificada localmente y en staging efímero, lanzamiento pendiente.
+- Estado: Parcialmente completada. Staging público operativo en Render con PostgreSQL en Supabase. Lanzamiento pendiente.
 - Última actualización: 2026-11-25.
-- Última tarea completada: Empaquetado para Render, arranque con el rol `src_app` en una base efímera y publicación del SQL inicial. [Ejecución 45736121907](https://github.com/CCayuqueo/SCE/actions/runs/45736121907).
-- Próxima tarea pendiente: inicializar el proyecto Supabase y crear el servicio Render para validar Auth en staging. Completar créditos y aceptación con usuarios reales.
+- Última tarea completada: Verificar el frontend público, HTTPS y la disponibilidad de PostgreSQL en el servicio de Render.
+- Próxima tarea pendiente: verificar Supabase Auth con un correo real. Completar créditos, recuperación y aceptación con usuarios reales.
 - Aprobación para avanzar: Fase 5 autorizada. Publicación pendiente de verificación y aprobación.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
@@ -144,7 +144,7 @@ GitHub Actions verificó el arranque con Docker Compose desde un checkout limpio
 | CA5-06 | Verificado | Chrome y Firefox también pasaron en staging efímero. Edge pasó por HTTPS local. |
 | CA5-07 | Verificado | El flujo de tres cuentas pasó en los tres navegadores en local y se repitió en Chrome y Firefox sobre Docker y HTTPS en CI. |
 | CA5-08 | Verificado | npm y pip-audit sin hallazgos. Trivy reportó cero vulnerabilidades críticas en las tres imágenes en la [ejecución 45728893992](https://github.com/CCayuqueo/SCE/actions/runs/45728893992). |
-| CA5-09 | Verificado en CI | Redirección 308, HSTS, salud y flujos Playwright verificados en staging efímero con TLS. Queda por validar el certificado del dominio real antes de publicar. |
+| CA5-09 | Verificado en staging | Render redirige HTTP a HTTPS y envía HSTS. El frontend público y la disponibilidad de PostgreSQL responden por HTTPS. |
 | CA5-10 | Verificado | Documentación de operación, despliegue y recuperación, y unidades para el respaldo diario. |
 
 ### Criterios de aceptación de Fase 0
@@ -162,18 +162,17 @@ GitHub Actions verificó el arranque con Docker Compose desde un checkout limpio
 ## Problemas pendientes
 
 - El daemon local de Docker no está disponible para esta sesión. GitHub Actions ya verificó el arranque en contenedores.
-- No hay servidor de staging persistente configurado. Los ensayos de infraestructura usan un entorno efímero en GitHub Actions.
-- Proyecto Supabase de staging identificado y repositorio visible en Render. El adaptador se verificó con PostgreSQL local y respuestas de Auth simuladas. Faltan inicializar el proyecto alojado, crear el servicio en Render y configurar SMTP.
+- Queda por verificar la confirmación por correo y el inicio de sesión contra Supabase Auth alojado.
 - Créditos del equipo pendientes de confirmación.
 
 ## Dependencias pendientes
 
-- Servicio web en Render con HTTPS, SMTP para las pruebas de cuentas y permisos de aplicación en el proyecto Supabase.
+- Entrega de correo SMTP para probar cuentas externas al equipo de Supabase y destino del respaldo administrado.
 
 ## Pruebas pendientes
 
-- Validación del dominio público, activación del respaldo programado y aceptación con usuarios reales.
+- Registro, confirmación de correo, inicio de sesión, activación y restauración del respaldo programado, y aceptación con usuarios reales.
 
 ## Próximos pasos
 
-- Desplegar la candidata en staging con dominio, verificar HTTPS y el respaldo programado, y registrar la aceptación con usuarios reales antes de publicar.
+- Verificar el registro por correo en staging, ensayar el respaldo de Supabase y registrar la aceptación antes de publicar.

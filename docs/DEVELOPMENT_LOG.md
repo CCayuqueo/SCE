@@ -435,3 +435,15 @@ Adaptador implementado. Faltan el empaquetado para Render y la prueba con el ser
 ### Estado y próximo paso
 
 El usuario confirmó que Render muestra `CCayuqueo/SCE`. El servicio alojado queda pendiente de la inicialización de Supabase, la creación del servicio, SMTP y la aceptación con usuarios reales.
+
+## 2026-11-25 — Fase 5 — Verificación del staging alojado
+
+### Pruebas realizadas
+
+- Tras la configuración del usuario, el servicio público de Render redirigió HTTP a HTTPS, respondió con HSTS y sirvió Inicio, Registro, Login y la ruta de Salas.
+- `/api/v1/health/live` y `/api/v1/health/ready` respondieron 200. La segunda comprobación confirmó el acceso del servidor a PostgreSQL y a la función de identidad configurada en Supabase.
+- Chromium cargó React y navegó de Inicio a Registro y Login. Una visita sin sesión a `/app/salas` redirigió a `/login`. La API de sesión devolvió 401 para la misma condición.
+
+### Estado y próximo paso
+
+Staging alojado operativo. Quedan por verificar el registro por correo y el inicio de sesión en Supabase Auth, el respaldo programado y su restauración, la aceptación con usuarios reales y los créditos del equipo.

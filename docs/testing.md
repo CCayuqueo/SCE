@@ -66,7 +66,15 @@ tardó entre 4,39 y 4,50 s. La auditoría de las cuatro imágenes pasó. El
 [artefacto SQL](https://github.com/CCayuqueo/SCE/actions/runs/45736121907/artifacts/15078792522)
 se generó sin secretos y se aplicó a PostgreSQL efímero.
 
+## Resultados en Render
+
+El sitio de staging redirigió HTTP a HTTPS y sirvió Inicio, Registro, Login y
+la ruta de Salas. Las comprobaciones de proceso y PostgreSQL devolvieron 200.
+La API devolvió 401 al consultar la sesión sin credenciales. Chromium navegó
+por Inicio, Registro y Login, y una visita sin sesión a `/app/salas` redirigió
+a `/login`.
+
 ## Pendiente de lanzamiento
 
-El entorno efímero usa un certificado temporal. Quedan por verificar el dominio,
-el respaldo programado y la aceptación con usuarios reales.
+Quedan por verificar el flujo de correo de Supabase Auth, el respaldo programado
+de la base alojada y la aceptación con usuarios reales.
