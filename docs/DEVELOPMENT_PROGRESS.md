@@ -5,7 +5,7 @@
 - Fase actual: Fase 5 — Inicio, Guía, pulido y QA.
 - Estado: Parcialmente completada. Candidata verificada localmente y en staging efímero, lanzamiento pendiente.
 - Última actualización: 2026-11-25.
-- Última tarea completada: Arranque Docker en GitHub Actions, HTTPS y restauración en staging efímero.
+- Última tarea completada: F5-09. Preparación de despliegue con arranque Docker, HTTPS, restauración y auditoría de imágenes verificados en CI.
 - Próxima tarea pendiente: validar el despliegue en un servidor, completar los créditos y realizar la aceptación con usuarios reales.
 - Aprobación para avanzar: Fase 5 autorizada. Publicación pendiente de verificación y aprobación.
 
@@ -129,7 +129,7 @@ GitHub Actions verificó el arranque con Docker Compose desde un checkout limpio
 - [x] F5-06 · Verificar accesibilidad y diseño responsive.
 - [x] F5-07 · Automatizar pruebas E2E.
 - [x] F5-08 · Ejecutar pruebas de seguridad y concurrencia.
-- [ ] F5-09 · Preparar despliegue, HTTPS y respaldos.
+- [x] F5-09 · Preparar despliegue, HTTPS y respaldos.
 - [ ] F5-10 · Ejecutar pruebas de aceptación y documentar release.
 
 ### Criterios de aceptación de Fase 5
@@ -143,7 +143,7 @@ GitHub Actions verificó el arranque con Docker Compose desde un checkout limpio
 | CA5-05 | Verificado | Guía con captura de referencia y explicación de edición, confirmación y análisis. |
 | CA5-06 | Verificado | Chrome y Firefox también pasaron en staging efímero. Edge pasó por HTTPS local. |
 | CA5-07 | Verificado | El flujo de tres cuentas pasó en los tres navegadores en local y se repitió en Chrome y Firefox sobre Docker y HTTPS en CI. |
-| CA5-08 | Parcial | npm y pip-audit sin hallazgos. Faltan imágenes de producción y revisión en staging. |
+| CA5-08 | Verificado | npm y pip-audit sin hallazgos. Trivy reportó cero vulnerabilidades críticas en las tres imágenes en la [ejecución 45728893992](https://github.com/CCayuqueo/SCE/actions/runs/45728893992). |
 | CA5-09 | Verificado en CI | Redirección 308, HSTS, salud y flujos Playwright verificados en staging efímero con TLS. Queda por validar el certificado del dominio real antes de publicar. |
 | CA5-10 | Verificado | Documentación de operación, despliegue y recuperación, y unidades para el respaldo diario. |
 

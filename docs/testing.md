@@ -49,12 +49,17 @@ en él dentro del contexto de Playwright. En staging se usa el certificado real.
 `SRC_E2E_EDGE` con la ruta al ejecutable de Microsoft Edge y ejecuta
 `npm run test:e2e -- --project=edge`.
 
-## Pendiente de lanzamiento
+## Resultados en GitHub Actions
 
-Los [trabajos de CI](https://github.com/CCayuqueo/SCE/actions) verificaron la
+[La ejecución 45728893992](https://github.com/CCayuqueo/SCE/actions/runs/45728893992) verificó la
 construcción y el arranque con Docker, el parser dentro del contenedor, HTTPS
-y Playwright en staging desechable. Una copia generada por el script de
-respaldo se restauró en una base nueva y sus recuentos coincidieron.
+y cuatro pruebas Playwright en staging desechable. Una copia generada por el
+script de respaldo se restauró en una base nueva y sus recuentos coincidieron.
+Pasaron 39 pruebas de backend con 94 % de cobertura en los módulos medidos.
+Trivy detectó cero vulnerabilidades críticas en las imágenes de frontend,
+backend y PostgreSQL.
+
+## Pendiente de lanzamiento
 
 El entorno efímero usa un certificado temporal. Quedan por verificar el dominio,
 el respaldo programado y la aceptación con usuarios reales.

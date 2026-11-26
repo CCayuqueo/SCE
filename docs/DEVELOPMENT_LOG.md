@@ -375,7 +375,12 @@ Verificar la configuración de lanzamiento desde un checkout de `develop` y ensa
 - La [ejecución 45727454779](https://github.com/CCayuqueo/SCE/actions/runs/45727454779) aprobó el ensayo HTTPS y de restauración. Su auditoría identificó vulnerabilidades críticas en las imágenes base de los tres servicios.
 - La [ejecución 45728005133](https://github.com/CCayuqueo/SCE/actions/runs/45728005133) aprobó la restauración y cuatro pruebas Playwright. Trivy dejó de detectar vulnerabilidades críticas en frontend y backend. Reportó CVE-2025-68121 en `gosu`, incluido en la imagen oficial de PostgreSQL Alpine. La imagen de Compose lo sustituye por `su-exec` y conserva el entrypoint y la cuenta `postgres`.
 - La [ejecución 45728484583](https://github.com/CCayuqueo/SCE/actions/runs/45728484583) verificó PostgreSQL, los navegadores y la restauración con `su-exec`. La auditoría todavía reportó el binario heredado al reemplazarlo directamente con un enlace. Se agregó una capa explícita de borrado para registrar su eliminación en la imagen.
+- La [ejecución 45728893992](https://github.com/CCayuqueo/SCE/actions/runs/45728893992) aprobó los tres trabajos. Pasaron 39 pruebas de backend con 94 % de cobertura, cuatro pruebas Playwright sobre HTTPS y la restauración. Trivy detectó cero vulnerabilidades críticas en las tres imágenes.
 - Se comprobaron `bash -n`, `git diff --check` y las configuraciones Compose de desarrollo y producción.
+
+### Estado
+
+F5-09 completada. Fase 5 parcialmente completada hasta confirmar los créditos (F5-02) y realizar la aceptación (F5-10). Los commits de este bloque se publicaron en `develop`.
 
 ### Pendientes para el lanzamiento
 
