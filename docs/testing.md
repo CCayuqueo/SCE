@@ -51,7 +51,10 @@ en él dentro del contexto de Playwright. En staging se usa el certificado real.
 
 ## Pendiente de lanzamiento
 
-Quedan por verificar la ejecución completa de Docker y GitHub Actions,
-las imágenes de producción, el dominio y respaldo programado en staging y la
-aceptación con usuarios reales. La prueba local de TLS usa un certificado
-temporal y no sustituye la validación del dominio público.
+Los [trabajos de CI](https://github.com/CCayuqueo/SCE/actions) verificaron la
+construcción y el arranque con Docker, el parser dentro del contenedor, HTTPS
+y Playwright en staging desechable. Una copia generada por el script de
+respaldo se restauró en una base nueva y sus recuentos coincidieron.
+
+El entorno efímero usa un certificado temporal. Quedan por verificar el dominio,
+el respaldo programado y la aceptación con usuarios reales.

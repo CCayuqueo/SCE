@@ -5,7 +5,7 @@
 - Fase actual: Fase 5 — Inicio, Guía, pulido y QA.
 - Estado: Parcialmente completada. Candidata local verificada, lanzamiento pendiente.
 - Última actualización: 2026-11-25.
-- Última tarea completada: E2E en Chrome, Firefox y Edge, cobertura, rendimiento y plantilla de respaldo diario.
+- Última tarea completada: Arranque Docker en GitHub Actions, HTTPS y restauración en staging efímero.
 - Próxima tarea pendiente: validar staging, completar créditos y aceptar la versión con usuarios reales.
 - Aprobación para avanzar: Fase 5 autorizada. Publicación pendiente de verificación y aprobación.
 
@@ -17,15 +17,15 @@ validación de Fase 0 se realiza por entregable y por criterio CA0, sin renumera
 
 El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docker, la verificación desde un clon y la ejecución de GitHub Actions.
 
-- [ ] F0-01 · Crear repositorio y estrategia de ramas.
+- [x] F0-01 · Crear repositorio y estrategia de ramas.
 - [x] F0-02 · Inicializar React, TypeScript y Vite.
 - [x] F0-03 · Inicializar FastAPI y arquitectura modular.
 - [x] F0-04 · Configurar PostgreSQL y Alembic.
-- [ ] F0-05 · Crear Dockerfiles y Docker Compose.
+- [x] F0-05 · Crear Dockerfiles y Docker Compose.
 - [x] F0-06 · Configurar variables de entorno y secretos.
-- [ ] F0-07 · Implementar proxy, conexión API y health checks.
-- [ ] F0-08 · Configurar linters, testing y GitHub Actions.
-- [ ] F0-09 · Documentar instalación y ejecución.
+- [x] F0-07 · Implementar proxy, conexión API y health checks.
+- [x] F0-08 · Configurar linters, testing y GitHub Actions.
+- [x] F0-09 · Documentar instalación y ejecución.
 
 ## Fase 1 — Base de datos y autenticación
 
@@ -140,38 +140,37 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 | CA5-03 | Verificado | Playwright verifica Inicio, Salas y Ajustes en ese orden. |
 | CA5-04 | Verificado | La guía queda al final y se puede abrir por teclado. |
 | CA5-05 | Verificado | Guía con captura de referencia y explicación de edición, confirmación y análisis. |
-| CA5-06 | Verificado localmente | Flujo crítico y navegación móvil pasan en Chrome, Firefox y Edge. |
-| CA5-07 | Verificado localmente | Playwright pasa el flujo de tres cuentas en los tres navegadores. |
+| CA5-06 | Verificado | Chrome y Firefox también pasaron en staging efímero. Edge pasó por HTTPS local. |
+| CA5-07 | Verificado | El flujo de tres cuentas pasó en los tres navegadores en local y se repitió en Chrome y Firefox sobre Docker y HTTPS en CI. |
 | CA5-08 | Parcial | npm y pip-audit sin hallazgos. Faltan imágenes de producción y revisión en staging. |
-| CA5-09 | Parcial | Redirección 308, HSTS y flujos TLS verificados localmente. Falta el dominio de staging. |
+| CA5-09 | Parcial | Redirección 308, HSTS, salud y flujos Playwright verificados en staging efímero con TLS. Falta el certificado del dominio real. |
 | CA5-10 | Verificado | Documentación de operación, despliegue y recuperación, y unidades para el respaldo diario. |
 
 ### Criterios de aceptación de Fase 0
 
 | ID | Estado | Evidencia |
 |---|---|---|
-| CA0-01 | Pendiente | README disponible y recorrido local comprobado en este checkout. Falta verificar desde un clon con Docker. |
-| CA0-02 | Pendiente | Compose acepta la configuración. El daemon rechaza el arranque. |
-| CA0-03 | Verificado localmente | Vite sirvió la aplicación y su proxy devolvió la respuesta de FastAPI. La ruta mediante Nginx queda incluida en la verificación de Compose. |
+| CA0-01 | Verificado en CI | El runner levantó todos los servicios desde un checkout limpio con Docker Compose. |
+| CA0-02 | Verificado en CI | `docker compose up --build --wait` levantó frontend, API y PostgreSQL. |
+| CA0-03 | Verificado en CI | Nginx sirvió la aplicación y el proxy de FastAPI durante las pruebas de navegador. |
 | CA0-04 | Verificado | El endpoint de disponibilidad respondió 200 con PostgreSQL 17.12 y 503 cuando la base no estaba disponible. |
 | CA0-05 | Verificado | `alembic upgrade head` desde una base vacía aplicó `0001`. `alembic check` confirmó que no había operaciones pendientes. |
-| CA0-06 | Pendiente | YAML válido y compilación y pruebas ejecutadas localmente. Falta una ejecución en GitHub Actions. |
+| CA0-06 | Verificado | GitHub Actions ejecutó frontend, backend y Compose en la [ejecución 45726375485](https://github.com/CCayuqueo/SCE/actions/runs/45726375485). |
 | CA0-07 | Verificado en los archivos revisados | `.env` está ignorado, la plantilla no incluye contraseña y no se detectaron claves o tokens en el árbol revisado. |
 
 ## Problemas pendientes
 
-- Docker instalado, pero el usuario del entorno carece de acceso al daemon.
-- El remoto GitHub ya está configurado. Al consultar el remoto, `main` apuntaba a `6fc243f` y GitHub Actions no tenía ejecuciones registradas.
-- No hay destino de staging configurado.
+- El daemon local de Docker no está disponible para esta sesión. GitHub Actions ya verificó el arranque en contenedores.
+- `develop` está publicada en el remoto de GitHub y ejecuta CI.
+- No hay servidor de staging persistente configurado. Los ensayos de infraestructura usan un entorno efímero en GitHub Actions.
 - Créditos del equipo pendientes de confirmación.
 
 ## Dependencias pendientes
 
-- Acceso a un entorno Docker y a un destino de staging verificable.
+- Un servidor de staging con dominio y certificado propios.
 
 ## Pruebas pendientes
 
-- Arranque completo de Compose y ejecución de GitHub Actions.
 - Validación del dominio público, activación del respaldo programado y aceptación con usuarios reales.
 
 ## Próximos pasos

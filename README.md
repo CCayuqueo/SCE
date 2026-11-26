@@ -159,6 +159,7 @@ SRC_E2E_URL=http://localhost:3000 npm run test:e2e
 
 Para producción consulta [HTTPS, despliegue y recuperación](docs/deployment.md).
 El manual incluye una plantilla de systemd para el respaldo diario.
+Si ya tenías datos en la imagen Debian de PostgreSQL, sigue el [procedimiento de actualización](docs/deployment.md#actualización-desde-postgresql-17-en-debian) antes de cambiar a Alpine.
 Los [resultados y datos de prueba](docs/testing.md) describen lo que ya se verificó.
 
 ## Estructura y documentación

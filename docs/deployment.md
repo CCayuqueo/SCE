@@ -26,6 +26,35 @@ El runner comprueba migraciones, flujos de navegador y restauración, y audita
 las imágenes de ejecución. La instalación en un servidor requiere validar por
 separado el dominio, el certificado real y la ejecución programada del respaldo.
 
+### Actualización desde PostgreSQL 17 en Debian
+
+La base de Compose usa ahora la imagen Alpine de PostgreSQL 17 y el volumen
+`pgdata_alpine`. Si una instalación anterior escribió datos en `pgdata`, conserva
+ese volumen y toma un respaldo lógico desde la instalación anterior, antes de
+cambiar de imagen. Detén las escrituras para el corte. Con la configuración
+nueva, inicia solo el servicio `database`, restaura en una base vacía y verifica
+la revisión de Alembic y los recuentos antes de iniciar la API. Las variantes
+Debian y Alpine usan bibliotecas distintas para las reglas de ordenación. Evita
+montar los archivos físicos del volumen Debian en la imagen Alpine.
+
+## Aceptación en staging
+
+Antes de publicar, comprueba en el servidor de staging:
+
+1. El dominio redirige de HTTP a HTTPS. El certificado es válido para ese
+   dominio y `/api/v1/health/ready` responde que PostgreSQL está disponible.
+2. Alembic aplica las migraciones y `alembic check` pasa antes de validar la app.
+3. Con usuarios de prueba y sus propias capturas, se puede crear y unir una sala,
+   corregir el horario, confirmar y consultar la superposición. Verifica que un
+   miembro regular no pueda acceder a esa vista. Completa la eliminación de
+   cuenta con transferencia en una sala desechable.
+4. El temporizador ejecuta un respaldo programado y la restauración en una base
+   aparte conserva los datos esperados.
+
+Registra la URL, el commit desplegado, las pruebas realizadas y los problemas
+detectados en la bitácora. La suite automatizada crea y elimina datos de prueba:
+ejecútala solo contra una base desechable.
+
 Para PostgreSQL administrado en otro proveedor, adapta el despliegue a su conexión
 TLS y suministra `DATABASE_URL` al backend como secreto. Usa un rol de aplicación
 dedicado y limita el acceso de red al servidor SRC. Analiza las migraciones y los

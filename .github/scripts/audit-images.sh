@@ -12,7 +12,8 @@ while IFS= read -r image; do
     if ! docker run --rm \
         -v "$scan/image.tar:/tmp/image.tar:ro" \
         -v "$scan/cache:/tmp/cache" \
-        aquasec/trivy:0.76.2 image --input /tmp/image.tar --cache-dir /tmp/cache \
+        aquasec/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb \
+        image --input /tmp/image.tar --cache-dir /tmp/cache --no-progress \
         --scanners vuln --severity CRITICAL --exit-code 1; then
         status=1
     fi

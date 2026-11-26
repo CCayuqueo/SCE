@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:17-bookworm
+        image: postgres:17-alpine
         env:
           POSTGRES_USER: src
           POSTGRES_DB: src_test
