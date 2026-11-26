@@ -52,7 +52,7 @@ docker run -d --name "$container" --network "${COMPOSE_PROJECT_NAME}_default" \
     -v "$PWD/images:/parser/images:ro" "$image"
 
 origin=http://127.0.0.1:10080
-curl -fsS --retry 15 --retry-connrefused --retry-delay 2 --max-time 5 \
+curl -fsS --retry 15 --retry-all-errors --retry-delay 2 --max-time 5 \
     "$origin/api/v1/health/ready" | grep '"status":"ok"'
 test "$(docker exec "$container" id -u)" -ne 0
 for route in / /login /register /app/salas; do
