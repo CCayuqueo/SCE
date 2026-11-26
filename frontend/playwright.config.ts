@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const edge = process.env.SRC_E2E_EDGE;
+
 export default defineConfig({
   testDir: "./e2e",
   timeout: 90_000,
@@ -15,5 +17,16 @@ export default defineConfig({
       },
     },
     { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+    ...(edge
+      ? [
+          {
+            name: "edge",
+            use: {
+              ...devices["Desktop Edge"],
+              launchOptions: { executablePath: edge },
+            },
+          },
+        ]
+      : []),
   ],
 });

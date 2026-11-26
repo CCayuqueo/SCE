@@ -1,0 +1,9 @@
+[Unit]
+Description=Respaldar PostgreSQL de SRC
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/src
+EnvironmentFile=%h/.config/src/backup.env
+UMask=0077
+ExecStart=/usr/bin/bash %h/src/infrastructure/scripts/backup-db.sh ${SRC_BACKUP_DIR} -f docker-compose.yml -f docker-compose.production.yml

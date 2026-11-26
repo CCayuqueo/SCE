@@ -5,7 +5,7 @@
 - Fase actual: Fase 5 — Inicio, Guía, pulido y QA.
 - Estado: Parcialmente completada. Candidata local verificada, lanzamiento pendiente.
 - Última actualización: 2026-11-25.
-- Última tarea completada: experiencia de uso, E2E en Chrome y Firefox, TLS local y restauración de respaldo.
+- Última tarea completada: E2E en Chrome, Firefox y Edge, cobertura, rendimiento y plantilla de respaldo diario.
 - Próxima tarea pendiente: validar staging, completar créditos y aceptar la versión con usuarios reales.
 - Aprobación para avanzar: Fase 5 autorizada. Publicación pendiente de verificación y aprobación.
 
@@ -140,11 +140,11 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 | CA5-03 | Verificado | Playwright verifica Inicio, Salas y Ajustes en ese orden. |
 | CA5-04 | Verificado | La guía queda al final y se puede abrir por teclado. |
 | CA5-05 | Verificado | Guía con captura de referencia y explicación de edición, confirmación y análisis. |
-| CA5-06 | Verificado localmente | Flujo crítico y navegación móvil pasan en Chrome y Firefox. Edge pendiente. |
-| CA5-07 | Verificado localmente | Playwright pasa el flujo de tres cuentas en ambos navegadores. |
+| CA5-06 | Verificado localmente | Flujo crítico y navegación móvil pasan en Chrome, Firefox y Edge. |
+| CA5-07 | Verificado localmente | Playwright pasa el flujo de tres cuentas en los tres navegadores. |
 | CA5-08 | Parcial | npm y pip-audit sin hallazgos. Faltan imágenes de producción y revisión en staging. |
 | CA5-09 | Parcial | Redirección 308, HSTS y flujos TLS verificados localmente. Falta el dominio de staging. |
-| CA5-10 | Verificado | Documentación de operación, despliegue, respaldo y recuperación disponible. |
+| CA5-10 | Verificado | Documentación de operación, despliegue y recuperación, y unidades para el respaldo diario. |
 
 ### Criterios de aceptación de Fase 0
 
@@ -161,17 +161,18 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 ## Problemas pendientes
 
 - Docker instalado, pero el usuario del entorno carece de acceso al daemon.
-- No hay remoto GitHub ni destino de staging configurados.
+- El remoto GitHub ya está configurado. Al consultar el remoto, `main` apuntaba a `6fc243f` y GitHub Actions no tenía ejecuciones registradas.
+- No hay destino de staging configurado.
 - Créditos del equipo pendientes de confirmación.
 
 ## Dependencias pendientes
 
-- Acceso a un entorno Docker y al repositorio GitHub de destino.
+- Acceso a un entorno Docker y a un destino de staging verificable.
 
 ## Pruebas pendientes
 
 - Arranque completo de Compose y ejecución de GitHub Actions.
-- Edge, validación del dominio público, respaldo programado y aceptación con usuarios reales.
+- Validación del dominio público, activación del respaldo programado y aceptación con usuarios reales.
 
 ## Próximos pasos
 

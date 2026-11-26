@@ -327,3 +327,23 @@ Fase 5 parcialmente completada. Candidata local verificada, publicación pendien
 
 ### Próximo paso
 Confirmar créditos, validar la infraestructura real y realizar la aceptación antes de publicar.
+
+## 2026-11-25 — Fase 5 — Compatibilidad, cobertura y respaldo diario
+
+### Cambios implementados
+
+- Se añadió un proyecto Playwright opcional para Microsoft Edge.
+- Se configuró en CI el umbral de 80 % de cobertura de líneas y ramas de los módulos críticos. Se agregaron dos casos de cabeceras PNG y JPEG dañadas antes de decodificar.
+- Se añadieron unidades de systemd para el respaldo diario y se documentó su instalación, comprobación y activación.
+
+### Verificaciones
+
+- Edge 158.0.4370.33 pasó ambos escenarios Playwright sobre Nginx y HTTPS local. Con Chrome y Firefox, los dos escenarios están verificados localmente en los tres navegadores.
+- Pasaron 39 pruebas de backend con PostgreSQL 17.12 y `alembic check`. Cobertura agregada del 94 % en los módulos críticos medidos. Ruff y la compilación, lint y formato del frontend verificaron los cambios.
+- Medición local con TestClient y PostgreSQL por socket: p95 de 34,4 ms para 30 consultas autenticadas de perfil y de 818,2 ms para las seis cargas originales.
+- Se validaron las unidades de respaldo sin activarlas. Con pg_dump real y transporte Compose simulado, el script publicó un archivo válido con permisos 0600 y limpió el temporal al fallar.
+- Se recuperó la base temporal tras agotar el espacio de `/tmp` durante la extracción de Edge. Se repitieron las verificaciones afectadas.
+
+### Estado
+
+Fase 5 parcialmente completada. El usuario configuró `origin` y renombró la rama a `main`. La consulta remota encontró `main` en `6fc243f` y cero ejecuciones de GitHub Actions. Quedan pendientes Docker, staging con dominio real, respaldo programado activo, créditos confirmados y aceptación con usuarios. Se conserva `main` y se guarda el bloque en una rama local de QA.

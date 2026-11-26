@@ -6,3 +6,18 @@ pythonpath = ["."]
 testpaths = ["tests"]
 markers = ["integration: requiere PostgreSQL y DATABASE_URL"]
 addopts = "-m 'not integration'"
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+
+[tool.coverage.report]
+include = [
+    "app/auth/*",
+    "app/users/*",
+    "app/rooms/*",
+    "app/schedules/*",
+    "app/image_processing/*",
+    "app/overlap/*",
+]
+fail_under = 80

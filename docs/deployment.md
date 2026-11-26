@@ -44,6 +44,26 @@ bash infrastructure/scripts/backup-db.sh /srv/src/backups \
   -f docker-compose.yml -f docker-compose.production.yml
 ```
 
+En un servidor con systemd, puedes usar las unidades de
+`infrastructure/systemd/` para ejecutar el respaldo a las 03:00 de la hora
+local. La plantilla supone que el repositorio está en `~/src` y que la cuenta
+operadora tiene acceso a Docker. Si el repositorio está en otra ruta, cambia
+`WorkingDirectory` y `ExecStart` en la copia de la unidad. Define
+`SRC_BACKUP_DIR=/ruta/privada` en `~/.config/src/backup.env`, con permisos `0600`.
+
+```bash
+install -d -m 700 ~/.config/systemd/user
+install -m 644 infrastructure/systemd/src-backup.{service,timer} ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user start src-backup.service
+systemctl --user enable --now src-backup.timer
+systemctl --user list-timers src-backup.timer
+```
+
+Revisa el primer resultado en `journalctl --user -u src-backup.service`.
+Si el respaldo debe ejecutarse sin sesiones abiertas, la cuenta operadora
+necesita un gestor de servicios de usuario activo al arrancar el servidor.
+
 Prueba la restauración periódicamente en una base nueva y aislada con acceso
 restringido. Usa las herramientas cliente de PostgreSQL, una URL de conexión sin
 credenciales en el comando (por ejemplo, usando un servicio y un archivo

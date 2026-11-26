@@ -18,6 +18,18 @@ REFERENCE = json.loads(
 SAMPLE = ROOT / "images" / next(iter(REFERENCE))
 
 
+@pytest.mark.parametrize("corruption", ["jpeg_segment", "png_width"])
+def test_rejects_broken_image_headers_before_decoding(corruption):
+    if corruption == "jpeg_segment":
+        data = b"\xff\xd8\xff\xe0\x00\x01\x00"
+    else:
+        sample = SAMPLE.read_bytes()
+        data = sample[:16] + bytes(4) + sample[20:]
+    with pytest.raises(ApiError) as error:
+        validate_image(data, 12_000_000)
+    assert error.value.status == 422
+
+
 def processor():
     return ImageProcessor(Settings(database_url="postgresql+psycopg:///unused"))
 

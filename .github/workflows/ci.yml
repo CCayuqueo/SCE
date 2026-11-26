@@ -55,14 +55,14 @@ jobs:
           cache-dependency-path: backend/requirements*.txt
       - run: python -m pip install -r requirements-dev.txt
       - run: ruff check . && ruff format --check .
-      - run: pytest
-      - name: Verificar el esquema con PostgreSQL
+      - name: Verificar el esquema y la cobertura con PostgreSQL
         env:
           DATABASE_URL: postgresql+psycopg://src:ci-only-not-a-secret@127.0.0.1:${{ job.services.postgres.ports[5432] }}/src_test
         run: |
           alembic upgrade head
           alembic check
-          pytest -m integration
+          coverage run -m pytest -m 'integration or not integration'
+          coverage report
       - run: python ../horario_parser.py ../images > /dev/null
 
   compose:
