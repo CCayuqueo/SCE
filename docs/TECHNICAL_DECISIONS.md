@@ -117,3 +117,12 @@
 - Decisión: FastAPI verifica las credenciales contra Supabase Auth. El perfil usa el UUID de Auth. El correo se consulta en el esquema de identidad y la contraseña queda bajo custodia de Supabase. SRC conserva su cookie opaca y CSRF. El backend elimina perfil, salas según las decisiones del usuario y la identidad dentro de una misma transacción PostgreSQL. El rol `src_app` tiene funciones restringidas para consultar y eliminar la identidad.
 - Consecuencias: El registro administrado devuelve 202 y requiere confirmar el correo antes de iniciar sesión. El cambio de dirección se refleja tras la confirmación. El despliegue requiere SMTP, el mismo proyecto para Auth y PostgreSQL, y un ensayo de restauración que incluya ambos esquemas. La eliminación requiere comprobar los permisos y cascadas del esquema Auth del proyecto alojado.
 - Archivos afectados: `backend/app/auth/`, `backend/app/users/`, `backend/migrations/versions/0003_supabase_identity.py`, `infrastructure/supabase/permissions.sql` y flujos de registro y perfil del frontend.
+
+## ADR-012 — Servicio único para staging en Render
+
+- Fecha: 2026-11-25.
+- Estado: Adoptada para staging de Fase 5.
+- Contexto: Render Free ejecuta un servicio web y termina HTTPS en su proxy. SRC usa solicitudes de API del mismo origen y necesita ejecutar OpenCV en Python.
+- Decisión: Usar una etapa Docker que incorpora el frontend estático al runtime de FastAPI y escucha en `PORT`. Render proporciona el origen HTTPS. La inicialización de la base se publica como SQL de CI. El servicio web usa el rol restringido `src_app`.
+- Consecuencias: El formato y las rutas de la API se conservan. El servicio procesa una captura a la vez. Las migraciones del proyecto alojado se ejecutan por separado con una cuenta operadora. Docker Compose conserva su etapa de backend y su proxy Nginx.
+- Archivos afectados: `backend/Dockerfile`, `backend/app/render.py`, `infrastructure/render/start.sh`, `docker-compose.yml` y `.github/workflows/ci.yml`.

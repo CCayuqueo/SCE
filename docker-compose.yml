@@ -17,6 +17,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
+      target: backend
     environment:
       APP_ENV: ${APP_ENV:-development}
       APP_ORIGIN: ${APP_ORIGIN:-http://localhost:3000}

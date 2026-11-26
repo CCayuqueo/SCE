@@ -7,4 +7,15 @@
 !backend/migrations/
 !backend/migrations/**
 !horario_parser.py
+!frontend/
+!frontend/index.html
+!frontend/package.json
+!frontend/package-lock.json
+!frontend/tsconfig.json
+!frontend/vite.config.ts
+!frontend/src/
+!frontend/src/**
+!infrastructure/
+!infrastructure/render/
+!infrastructure/render/start.sh
 **/__pycache__

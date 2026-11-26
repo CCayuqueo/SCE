@@ -55,6 +55,77 @@ Registra la URL, el commit desplegado, las pruebas realizadas y los problemas
 detectados en la bitácora. La suite automatizada crea y elimina datos de prueba:
 ejecútala solo contra una base desechable.
 
+## Staging con Render Free y Supabase
+
+Render ejecuta un solo contenedor con el frontend compilado y FastAPI. Render
+termina HTTPS y la aplicación usa el origen HTTPS `RENDER_EXTERNAL_URL` para
+las cookies, la validación de `Origin` y las redirecciones de Supabase Auth.
+El proceso escucha en el `PORT` de Render y ejecuta el parser de a una captura.
+La cuenta de PostgreSQL del contenedor solo tiene permisos de aplicación.
+
+### Inicializar el proyecto vacío
+
+1. En Supabase, desactiva **Data API** y abre **SQL Editor → New query**. En
+   GitHub Actions, abre la ejecución exitosa de `develop` y descarga el
+   artefacto `src-supabase-bootstrap`. Descomprime, pega el contenido de
+   `src-supabase-bootstrap.sql` y pulsa **Run**. Úsalo una vez en el proyecto
+   nuevo. El archivo instala las migraciones y el rol `src_app`.
+2. En **Supabase → Connect → Session pooler**, copia el host exacto. Descarga
+   el certificado CA desde los ajustes de la base de datos. Con un cliente
+   `psql`, abre una conexión administrativa. Sustituye `<host>` y `<ref>`, y
+   usa la ruta local del certificado que descargaste. El cliente solicitará
+   la contraseña administrativa que guardaste al crear el proyecto.
+
+   ```bash
+   psql -X -W "host=<host> port=5432 dbname=postgres user=postgres.<ref> sslmode=verify-full sslrootcert=./supabase-ca.pem gssencmode=disable"
+   ```
+
+3. En esa sesión de `psql`, asigna a `src_app` una contraseña propia. Una
+   contraseña aleatoria hexadecimal permite pegarla en la URL de conexión sin
+   codificación adicional. `\password` la solicita de forma interactiva.
+
+   ```sql
+   \password src_app
+   ALTER ROLE src_app LOGIN;
+   \q
+   ```
+
+### Crear el servicio web
+
+En **Render → New → Web Service**, selecciona `CCayuqueo/SCE` y configura:
+
+| Campo | Valor |
+|---|---|
+| Name | `src-staging` |
+| Branch | `develop` |
+| Language | `Docker` |
+| Instance Type | `Free` |
+| Root Directory y Docker Build Context | raíz del repositorio |
+| Dockerfile Path | `backend/Dockerfile` |
+| Docker Command | vacío |
+| Health Check Path | `/api/v1/health/ready` |
+| Auto-Deploy | `Off` durante la validación inicial |
+
+En **Advanced → Secret Files**, agrega `supabase-ca.pem` con el contenido PEM
+del certificado que descargaste. Render lo monta en `/etc/secrets/`.
+Configura estas variables en el servicio:
+
+| Variable | Valor |
+|---|---|
+| `SUPABASE_URL` | Project URL de Supabase |
+| `SUPABASE_PUBLISHABLE_KEY` | Clave `sb_publishable_` de **Project Settings → API Keys** |
+| `DATABASE_URL` | Cadena de conexión para `src_app`, según el formato de abajo |
+
+```text
+postgresql+psycopg://src_app.<ref>:<contraseña-de-src_app>@<host>:5432/postgres?sslmode=verify-full&sslrootcert=/etc/secrets/supabase-ca.pem
+```
+
+Deja que Render asigne `PORT` y el subdominio HTTPS. La imagen usa
+`APP_ENV=staging` y toma `APP_ORIGIN` del subdominio asignado. Tras el primer
+despliegue, copia la URL HTTPS visible en Render y configúrala como **Site URL**
+en Supabase. Agrega la misma URL con `/login` a **Redirect URLs**. Habilita
+SMTP en Supabase antes de probar el registro con correos externos al equipo.
+
 ### Base de datos y autenticación en Supabase
 
 Usa un proyecto vacío de staging. En Supabase, desactiva la Data API del

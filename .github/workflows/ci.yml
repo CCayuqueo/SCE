@@ -110,8 +110,17 @@ jobs:
           npx playwright install --with-deps chromium firefox
       - name: Verificar staging efímero con HTTPS y restauración
         run: bash .github/scripts/check-staging.sh
+      - name: Verificar la imagen y el SQL de inicialización para Render
+        run: bash .github/scripts/check-render.sh
       - name: Auditar imágenes de ejecución
-        run: bash .github/scripts/audit-images.sh
+        run: bash .github/scripts/audit-images.sh "$COMPOSE_PROJECT_NAME-render"
+      - name: Publicar el SQL de inicialización de Supabase
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        uses: actions/upload-artifact@v7
+        with:
+          name: src-supabase-bootstrap
+          path: ${{ runner.temp }}/src-supabase-bootstrap.sql
+          if-no-files-found: error
       - if: failure()
         run: docker compose logs
       - if: always()

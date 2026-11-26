@@ -1,7 +1,7 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import APIRouter, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -44,26 +44,16 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             app.state.supabase_auth.client.close()
 
 
-app = FastAPI(title="SRC", version="1.0.0", lifespan=lifespan)
-app.add_exception_handler(ApiError, handle_api_error)
-app.add_exception_handler(UploadBodyTooLarge, handle_large_upload)
-app.add_middleware(LimitUploadBody)
-app.middleware("http")(log_request)
-app.add_exception_handler(RequestValidationError, handle_validation_error)
-app.include_router(auth_router)
-app.include_router(users_router)
-app.include_router(rooms_router)
-app.include_router(schedules_router)
-app.include_router(overlap_router)
+health = APIRouter(prefix="/api/v1/health")
 
 
-@app.get("/api/v1/health/live")
+@health.get("/live")
 def live() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get(
-    "/api/v1/health/ready",
+@health.get(
+    "/ready",
     response_model=dict[str, str],
     responses={503: {"description": "PostgreSQL no disponible"}},
 )
@@ -89,3 +79,30 @@ def ready(request: Request) -> dict[str, str] | JSONResponse:
             },
         )
     return {"status": "ok"}
+
+
+def create_app(*, api_docs: bool = True) -> FastAPI:
+    application = FastAPI(
+        title="SRC",
+        version="1.0.0",
+        lifespan=lifespan,
+        openapi_url="/openapi.json" if api_docs else None,
+    )
+    application.add_exception_handler(ApiError, handle_api_error)
+    application.add_exception_handler(UploadBodyTooLarge, handle_large_upload)
+    application.add_exception_handler(RequestValidationError, handle_validation_error)
+    application.add_middleware(LimitUploadBody)
+    application.middleware("http")(log_request)
+    for router in (
+        auth_router,
+        users_router,
+        rooms_router,
+        schedules_router,
+        overlap_router,
+        health,
+    ):
+        application.include_router(router)
+    return application
+
+
+app = create_app()

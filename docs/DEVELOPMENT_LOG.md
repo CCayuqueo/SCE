@@ -415,3 +415,20 @@ Usar el nuevo proyecto Supabase como autoridad de credenciales y preservar los p
 ### Estado y próximo paso
 
 Adaptador implementado. Faltan el empaquetado para Render y la prueba con el servicio alojado y SMTP. La aceptación con usuarios reales y el respaldo del proyecto Supabase siguen pendientes.
+
+## 2026-11-25 — Fase 5 — Empaquetado para Render Free
+
+### Cambios implementados
+
+- La etapa final de `backend/Dockerfile` compila React y lo sirve junto a FastAPI. El arranque requiere Supabase y usa el puerto y el origen asignados por Render. Se configuró un proceso de capturas concurrente.
+- `check-render.sh` prepara un proyecto PostgreSQL efímero con un esquema Auth mínimo, aplica el SQL generado y comprueba la salud con el rol restringido. El ensayo limita el contenedor a 512 MiB y 0,1 CPU y procesa las seis capturas de referencia.
+- CI audita la nueva imagen y publica `src-supabase-bootstrap` tras las comprobaciones. La guía detalla la inicialización de Supabase, la carga de su CA y el formulario de Render.
+
+### Comprobaciones locales
+
+- Se verificaron el frontend compilado, rutas profundas, JavaScript, cabeceras y respuestas 404 con TestClient. Se generó el SQL desde Alembic con la revisión `0003` y las funciones de permisos.
+- Pasaron Ruff, `git diff --check`, la validación sintáctica de los scripts y la configuración de Compose. El daemon local de Docker negó el acceso al socket, por lo que la construcción se verifica en GitHub Actions.
+
+### Estado y próximo paso
+
+El usuario confirmó que Render muestra `CCayuqueo/SCE`. El servicio alojado queda pendiente de la inicialización de Supabase, la creación del servicio, SMTP y la aceptación con usuarios reales.

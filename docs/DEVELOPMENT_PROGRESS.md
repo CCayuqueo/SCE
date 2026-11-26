@@ -6,7 +6,7 @@
 - Estado: Parcialmente completada. Candidata verificada localmente y en staging efímero, lanzamiento pendiente.
 - Última actualización: 2026-11-25.
 - Última tarea completada: F5-09. Preparación de despliegue con arranque Docker, HTTPS, restauración y auditoría de imágenes verificados en CI.
-- Próxima tarea pendiente: empaquetar SRC para Render y validar Supabase Auth en staging. Completar créditos y aceptación con usuarios reales.
+- Próxima tarea pendiente: inicializar el proyecto Supabase y crear el servicio Render para validar Auth en staging. Completar créditos y aceptación con usuarios reales.
 - Aprobación para avanzar: Fase 5 autorizada. Publicación pendiente de verificación y aprobación.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.

@@ -13,6 +13,7 @@ Trabaja en una fase a la vez y ejecuta cada tarea según sus dependencias. Regis
 - `frontend/`: React, TypeScript, Vite, React Router, Tailwind CSS y TanStack Query. Usa TypeScript estricto, componentes simples y solicitudes de API del mismo origen.
 - `backend/`: monolito modular en FastAPI con Pydantic, SQLAlchemy, Alembic y PostgreSQL. Separa rutas, lógica de negocio y persistencia. Usa tipado, Ruff y Pytest.
 - `infrastructure/nginx/`: proxy inverso. Docker Compose mantiene la API y PostgreSQL en la red privada.
+- `infrastructure/render/`: arranque del contenedor de staging con Supabase. Docker Compose usa la etapa `backend` y Render usa la etapa final del mismo Dockerfile.
 - `horario_parser.py`: parser existente en OpenCV y NumPy. Preserva su contrato y usa un adaptador en Fase 3. No utilices IA, OCR externo ni aprendizaje automático.
 - Vitest, Pytest y Playwright forman parte de la estrategia de pruebas del plan. Justifica y solicita aprobación para cambios de stack o dependencias importantes ajenas al plan.
 

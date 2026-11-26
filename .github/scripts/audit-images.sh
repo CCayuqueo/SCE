@@ -5,6 +5,9 @@ scan="$(mktemp -d "${RUNNER_TEMP:?}/src-image-audit.XXXXXX")"
 mkdir "$scan/cache"
 images="$(docker compose config --images)"
 test -n "$images"
+for image in "$@"; do
+    images+=$'\n'"$image"
+done
 status=0
 while IFS= read -r image; do
     echo "::group::Vulnerabilidades críticas en $image"
