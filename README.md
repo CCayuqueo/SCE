@@ -61,7 +61,9 @@ Vite muestra la URL local y redirige `/api` a `http://127.0.0.1:8000`. Para camb
 
 ## Autenticación
 
-Puedes crear una cuenta en `/register` e iniciar sesión en `/login`. Tras autenticarte puedes entrar en `/app/inicio`, recargar y cerrar la sesión. FastAPI guarda hashes de contraseñas y tokens. El navegador conserva la sesión en una cookie `HttpOnly` y usa un token CSRF para cerrar sesión.
+Puedes crear una cuenta en `/register` e iniciar sesión en `/login`. Tras autenticarte puedes entrar en `/app/inicio`, recargar y cerrar la sesión. El navegador conserva la sesión en una cookie `HttpOnly` y usa un token CSRF para cerrar sesión.
+
+Para un servidor conectado a Supabase, sigue la [configuración de PostgreSQL y Auth](docs/deployment.md#base-de-datos-y-autenticación-en-supabase). Supabase gestiona las credenciales y confirma el correo. FastAPI conserva la sesión revocable de SRC y comprueba los permisos por sala. Compose local puede ejecutar el flujo existente con credenciales locales para desarrollo y pruebas.
 
 En `/app/ajustes` puedes editar el perfil, cambiar la contraseña o revisar el impacto de eliminar tu cuenta. Cambiar el correo requiere la contraseña actual. Cambiar la contraseña cierra las demás sesiones. Para eliminar la cuenta, revisa las salas afectadas, elige un sucesor o confirma el cierre de cada sala compartida que poseas, e introduce la contraseña actual y la palabra `ELIMINAR`.
 

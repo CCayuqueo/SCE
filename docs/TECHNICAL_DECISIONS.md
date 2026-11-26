@@ -108,3 +108,12 @@
 - Justificación: La restauración lógica reconstruye los índices con las reglas de ordenamiento de la nueva imagen y conserva el volumen anterior para una reversión controlada.
 - Consecuencias: Las instalaciones existentes requieren una ventana de mantenimiento y la validación del respaldo antes del cambio. El procedimiento de despliegue documenta la migración y la reversión.
 - Archivos afectados: `docker-compose.yml`, `infrastructure/postgres/Dockerfile`, `.github/workflows/ci.yml` y `docs/deployment.md`.
+
+## ADR-011 — Identidad de Supabase y sesiones de SRC
+
+- Fecha: 2026-11-25.
+- Estado: Cambio autorizado por el usuario. Verificación en staging pendiente.
+- Contexto: El proyecto nuevo usará Supabase Auth y PostgreSQL administrado. No hay cuentas que migrar. Los permisos por sala y las transferencias al eliminar una cuenta pertenecen a SRC.
+- Decisión: FastAPI verifica las credenciales contra Supabase Auth. El perfil usa el UUID de Auth. El correo se consulta en el esquema de identidad y la contraseña queda bajo custodia de Supabase. SRC conserva su cookie opaca y CSRF. El backend elimina perfil, salas según las decisiones del usuario y la identidad dentro de una misma transacción PostgreSQL. El rol `src_app` tiene funciones restringidas para consultar y eliminar la identidad.
+- Consecuencias: El registro administrado devuelve 202 y requiere confirmar el correo antes de iniciar sesión. El cambio de dirección se refleja tras la confirmación. El despliegue requiere SMTP, el mismo proyecto para Auth y PostgreSQL, y un ensayo de restauración que incluya ambos esquemas. La eliminación requiere comprobar los permisos y cascadas del esquema Auth del proyecto alojado.
+- Archivos afectados: `backend/app/auth/`, `backend/app/users/`, `backend/migrations/versions/0003_supabase_identity.py`, `infrastructure/supabase/permissions.sql` y flujos de registro y perfil del frontend.

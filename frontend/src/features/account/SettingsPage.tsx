@@ -28,15 +28,21 @@ export function SettingsPage() {
     setNotice(null);
     try {
       const current_password = String(data.get("current_password") ?? "");
+      let message = "Contraseña actualizada. Se cerraron las demás sesiones.";
       if (change === "profile") {
-        await saveProfile(
+        const requestedEmail = String(data.get("email")).trim().toLowerCase();
+        const profile = await saveProfile(
           {
             name: String(data.get("name")),
-            email: String(data.get("email")),
+            email: requestedEmail,
             current_password: current_password || undefined,
           },
           csrf,
         );
+        message =
+          profile.email === requestedEmail
+            ? "Perfil actualizado."
+            : "Perfil actualizado. Revisa tu correo para confirmar el cambio de dirección.";
         auth.retry();
       } else {
         await savePassword(
@@ -47,13 +53,7 @@ export function SettingsPage() {
       }
       const password = element.elements.namedItem("current_password");
       if (password instanceof HTMLInputElement) password.value = "";
-      setNotice({
-        message:
-          change === "profile"
-            ? "Perfil actualizado."
-            : "Contraseña actualizada. Se cerraron las demás sesiones.",
-        failed: false,
-      });
+      setNotice({ message, failed: false });
     } catch (error) {
       setNotice({ message: errorMessage(error), failed: true });
     } finally {

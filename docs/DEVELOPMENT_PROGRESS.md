@@ -6,7 +6,7 @@
 - Estado: Parcialmente completada. Candidata verificada localmente y en staging efímero, lanzamiento pendiente.
 - Última actualización: 2026-11-25.
 - Última tarea completada: F5-09. Preparación de despliegue con arranque Docker, HTTPS, restauración y auditoría de imágenes verificados en CI.
-- Próxima tarea pendiente: validar el despliegue en un servidor, completar los créditos y realizar la aceptación con usuarios reales.
+- Próxima tarea pendiente: empaquetar SRC para Render y validar Supabase Auth en staging. Completar créditos y aceptación con usuarios reales.
 - Aprobación para avanzar: Fase 5 autorizada. Publicación pendiente de verificación y aprobación.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
@@ -163,11 +163,12 @@ GitHub Actions verificó el arranque con Docker Compose desde un checkout limpio
 
 - El daemon local de Docker no está disponible para esta sesión. GitHub Actions ya verificó el arranque en contenedores.
 - No hay servidor de staging persistente configurado. Los ensayos de infraestructura usan un entorno efímero en GitHub Actions.
+- Proyecto Supabase de staging identificado. El usuario autorizó Supabase Auth. El adaptador se verificó con PostgreSQL local y respuestas de Auth simuladas. Faltan el proveedor alojado, SMTP y el despliegue en Render.
 - Créditos del equipo pendientes de confirmación.
 
 ## Dependencias pendientes
 
-- Un servidor de staging con dominio y certificado propios.
+- Servicio web en Render con HTTPS, SMTP para las pruebas de cuentas y permisos de aplicación en el proyecto Supabase.
 
 ## Pruebas pendientes
 

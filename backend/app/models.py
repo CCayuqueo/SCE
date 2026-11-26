@@ -18,14 +18,18 @@ class User(Base):
     __table_args__ = (
         sa.UniqueConstraint("email", name="uq_users_email"),
         sa.CheckConstraint(
+            "(email IS NULL) = (password_hash IS NULL)",
+            name="ck_users_credentials_pair",
+        ),
+        sa.CheckConstraint(
             "email = lower(btrim(email))", name="ck_users_email_normalized"
         ),
     )
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     name: Mapped[str] = mapped_column(sa.String(100))
-    email: Mapped[str] = mapped_column(sa.String(254))
-    password_hash: Mapped[str] = mapped_column(sa.Text)
+    email: Mapped[str | None] = mapped_column(sa.String(254))
+    password_hash: Mapped[str | None] = mapped_column(sa.Text)
     created_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True), server_default=sa.func.now()
     )

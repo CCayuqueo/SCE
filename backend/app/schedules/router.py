@@ -65,7 +65,7 @@ def upload(
     file: Annotated[UploadFile, File()],
     expected_version: Annotated[int, Form(ge=0)],
 ) -> ScheduleView:
-    limit(request, "schedule-upload", auth.user.email)
+    limit(request, "schedule-upload", auth.email)
     member_id = access.membership.id
     room_id = access.room.id
     previous = lookup(db, member_id)

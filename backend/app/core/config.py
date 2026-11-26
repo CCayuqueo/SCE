@@ -1,12 +1,16 @@
 from typing import Annotated, Literal
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
 
 from pydantic import Field, SecretStr, model_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(hide_input_in_errors=True)
+
     database_url: SecretStr
+    supabase_url: str | None = None
+    supabase_publishable_key: SecretStr | None = None
     app_env: Literal["development", "test", "staging", "production"] = "development"
     app_origin: str = "http://localhost:3000"
     session_ttl_hours: Annotated[int, Field(gt=0)] = 24
@@ -19,7 +23,28 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def secure_origin(self):
-        if self.app_env == "production":
+        if bool(self.supabase_url) != bool(self.supabase_publishable_key):
+            raise ValueError("Configura SUPABASE_URL y SUPABASE_PUBLISHABLE_KEY juntas")
+        if self.supabase_url:
+            provider = urlsplit(self.supabase_url)
+            local = provider.hostname in {"localhost", "127.0.0.1"}
+            if (
+                not provider.hostname
+                or provider.username is not None
+                or provider.path not in {"", "/"}
+                or provider.query
+                or provider.fragment
+                or not (
+                    provider.scheme == "https"
+                    or (
+                        provider.scheme == "http"
+                        and local
+                        and self.app_env in {"development", "test"}
+                    )
+                )
+            ):
+                raise ValueError("SUPABASE_URL debe ser el origen HTTPS del proyecto")
+        if self.app_env in {"staging", "production"}:
             origin = urlsplit(self.app_origin)
             if (
                 origin.scheme != "https"
@@ -30,6 +55,12 @@ class Settings(BaseSettings):
                 or origin.fragment
             ):
                 raise ValueError(
-                    "APP_ORIGIN debe ser un origen HTTPS válido en producción"
+                    "APP_ORIGIN debe ser un origen HTTPS válido en staging o producción"
                 )
+            if self.supabase_url:
+                query = parse_qs(urlsplit(self.database_url.get_secret_value()).query)
+                if query.get("sslmode") != ["verify-full"]:
+                    raise ValueError(
+                        "DATABASE_URL para Supabase debe usar sslmode=verify-full"
+                    )
         return self

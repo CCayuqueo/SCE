@@ -56,8 +56,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         retry: () => void query.refetch(),
         clearSession: () => setSession(null),
         login: async (credentials) => setSession(await signIn(credentials)),
-        register: async (registration) =>
-          setSession(await signUp(registration)),
+        register: async (registration) => {
+          const session = await signUp(registration);
+          if (session) await setSession(session);
+          return session !== null;
+        },
         logout: async () => {
           if (!query.data) return;
           await signOut(query.data.csrf_token);

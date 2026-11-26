@@ -89,7 +89,7 @@ def enter_room(
     auth: CsrfUser,
     settings: AppSettings,
 ) -> RoomView:
-    limit(request, "join-room", auth.user.email)
+    limit(request, "join-room", auth.email)
     room, member, created = join_room(
         db, auth.user.id, data.code, settings.max_room_members
     )

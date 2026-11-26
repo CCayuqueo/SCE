@@ -27,8 +27,12 @@ export function signIn(body: Credentials): Promise<Session> {
   });
 }
 
-export async function signUp(body: Registration): Promise<Session> {
-  await requestJson<User>("/auth/register", { method: "POST", body });
+export async function signUp(body: Registration): Promise<Session | null> {
+  const user = await requestJson<User | null>("/auth/register", {
+    method: "POST",
+    body,
+  });
+  if (user === null) return null;
   const session = await readSession();
   if (!session) {
     throw new Error("No se pudo abrir la sesión. Prueba iniciar sesión.");

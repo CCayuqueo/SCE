@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 from secrets import token_urlsafe
 
 from sqlalchemy import delete, select
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DbSession
 
@@ -13,6 +14,7 @@ from app.auth.security import (
     hash_token,
     verify_password,
 )
+from app.auth.supabase import SupabaseAuth, identity_id
 from app.core.config import Settings
 from app.core.errors import ApiError
 from app.models import Session, User
@@ -66,8 +68,8 @@ def login(
 ) -> tuple[User, str]:
     user = db.scalar(select(User).where(User.email == data.email))
     observed_hash = user.password_hash if user else dummy_hash
-    valid = verify_password(data.password, observed_hash)
-    if user is None or not valid:
+    valid = verify_password(data.password, observed_hash or dummy_hash)
+    if user is None or observed_hash is None or not valid:
         raise invalid_credentials()
 
     # Si cambió la contraseña durante la verificación, no se emite una sesión.
@@ -79,3 +81,28 @@ def login(
 
 def invalid_credentials() -> ApiError:
     return ApiError(401, "INVALID_CREDENTIALS", "Correo o contraseña incorrectos.")
+
+
+def managed_login(db: DbSession, data: LoginInput, provider: SupabaseAuth) -> User:
+    user_id = identity_id(db, data.email)
+    user = db.get(User, user_id, with_for_update=True) if user_id else None
+    grant = provider.authenticate(data.email, data.password)
+    if grant is None:
+        raise invalid_credentials()
+    try:
+        if grant.user.id != user_id or (
+            user is not None and user.password_hash is not None
+        ):
+            raise invalid_credentials()
+        if user is None:
+            db.execute(
+                insert(User)
+                .values(id=user_id, name=grant.user.profile_name())
+                .on_conflict_do_nothing(index_elements=[User.id])
+            )
+            user = db.get(User, user_id, with_for_update=True)
+        if user is None or user.password_hash is not None:
+            raise invalid_credentials()
+        return user
+    finally:
+        provider.end_grant(grant)

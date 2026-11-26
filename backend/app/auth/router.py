@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from app.auth.dependencies import (
     SESSION_COOKIE,
     AppSettings,
+    AuthProvider,
     CsrfUser,
     CurrentUser,
     Db,
@@ -12,7 +13,7 @@ from app.auth.dependencies import (
 )
 from app.auth.schemas import LoginInput, RegistrationInput, SessionView, UserView
 from app.auth.security import csrf_token
-from app.auth.service import login, register
+from app.auth.service import login, managed_login, register, start_session
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 public_write = [Depends(require_origin), Depends(require_json)]
@@ -31,15 +32,26 @@ def set_session_cookie(response: Response, token: str, settings: AppSettings) ->
     )
 
 
-@router.post("/register", status_code=201, dependencies=public_write)
+@router.post(
+    "/register",
+    status_code=201,
+    dependencies=public_write,
+    responses={202: {"description": "Confirmación de correo pendiente"}},
+)
 def register_user(
     data: RegistrationInput,
     request: Request,
     response: Response,
     db: Db,
     settings: AppSettings,
-) -> UserView:
+    provider: AuthProvider,
+) -> UserView | None:
     limit(request, "register", data.email)
+    if provider:
+        provider.register(data)
+        response.status_code = 202
+        response.headers["Cache-Control"] = "no-store"
+        return None
     user, token = register(db, data, settings, request.cookies.get(SESSION_COOKIE))
     db.commit()
     set_session_cookie(response, token, settings)
@@ -53,12 +65,21 @@ def login_user(
     response: Response,
     db: Db,
     settings: AppSettings,
+    provider: AuthProvider,
 ) -> SessionView:
     limit(request, "login", data.email)
-    user, token = login(db, data, settings, request.cookies.get(SESSION_COOKIE))
+    previous_token = request.cookies.get(SESSION_COOKIE)
+    if provider:
+        user = managed_login(db, data, provider)
+        token = start_session(db, user, settings, previous_token)
+    else:
+        user, token = login(db, data, settings, previous_token)
     db.commit()
     set_session_cookie(response, token, settings)
-    return SessionView(user=UserView.model_validate(user), csrf_token=csrf_token(token))
+    return SessionView(
+        user=UserView(id=user.id, name=user.name, email=data.email),
+        csrf_token=csrf_token(token),
+    )
 
 
 @router.get("/me")
@@ -66,7 +87,8 @@ def get_me(response: Response, db: Db, auth: CurrentUser) -> SessionView:
     db.commit()
     response.headers["Cache-Control"] = "no-store"
     return SessionView(
-        user=UserView.model_validate(auth.user), csrf_token=csrf_token(auth.token)
+        user=UserView(id=auth.user.id, name=auth.user.name, email=auth.email),
+        csrf_token=csrf_token(auth.token),
     )
 
 

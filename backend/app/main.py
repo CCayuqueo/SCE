@@ -9,6 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.auth.rate_limit import AuthRateLimiter
 from app.auth.router import router as auth_router
+from app.auth.supabase import SupabaseAuth
 from app.core.config import Settings
 from app.core.database import make_engine
 from app.core.errors import ApiError, handle_api_error, handle_validation_error
@@ -30,12 +31,17 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.settings = Settings()
     app.state.image_processor = ImageProcessor(app.state.settings)
     app.state.auth_rate_limit = AuthRateLimiter()
+    app.state.supabase_auth = (
+        SupabaseAuth(app.state.settings) if app.state.settings.supabase_url else None
+    )
     engine = make_engine(app.state.settings)
     app.state.db = engine
     try:
         yield
     finally:
         engine.dispose()
+        if app.state.supabase_auth:
+            app.state.supabase_auth.client.close()
 
 
 app = FastAPI(title="SRC", version="1.0.0", lifespan=lifespan)
@@ -65,6 +71,12 @@ def ready(request: Request) -> dict[str, str] | JSONResponse:
     try:
         with request.app.state.db.connect() as connection:
             connection.execute(text("SELECT 1"))
+            if request.app.state.settings.supabase_url:
+                connection.execute(
+                    text(
+                        "SELECT src_auth.identity_email('00000000-0000-0000-0000-000000000000'::uuid)"
+                    )
+                )
     except SQLAlchemyError:
         return JSONResponse(
             status_code=503,

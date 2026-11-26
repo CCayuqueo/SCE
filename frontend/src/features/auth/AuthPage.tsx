@@ -9,6 +9,7 @@ export function AuthPage({ mode }: { mode: "login" | "register" }) {
   const auth = useAuth();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
+  const [confirmationPending, setConfirmationPending] = useState(false);
   const registering = mode === "register";
   const title = registering ? "Crear cuenta" : "Iniciar sesión";
 
@@ -25,8 +26,11 @@ export function AuthPage({ mode }: { mode: "login" | "register" }) {
     setPending(true);
     setError("");
     try {
-      if (registering) await auth.register({ name, email, password });
-      else await auth.login({ email, password });
+      if (registering) {
+        setConfirmationPending(
+          !(await auth.register({ name, email, password })),
+        );
+      } else await auth.login({ email, password });
     } catch (error) {
       setError(
         error instanceof Error
@@ -46,58 +50,65 @@ export function AuthPage({ mode }: { mode: "login" | "register" }) {
         SRC
       </Link>
       <h1 className="mt-4 text-3xl font-bold">{title}</h1>
-      <form className="mt-6 space-y-4" onSubmit={submit}>
-        {registering && (
+      {registering && confirmationPending ? (
+        <p role="status" className="mt-6 text-slate-700">
+          Revisa tu correo. Si recibes un enlace de confirmación, ábrelo y luego
+          inicia sesión.
+        </p>
+      ) : (
+        <form className="mt-6 space-y-4" onSubmit={submit}>
+          {registering && (
+            <label className="block">
+              Nombre
+              <input
+                className={inputClass}
+                name="name"
+                autoComplete="name"
+                minLength={2}
+                maxLength={100}
+                required
+              />
+            </label>
+          )}
           <label className="block">
-            Nombre
+            Correo electrónico
             <input
               className={inputClass}
-              name="name"
-              autoComplete="name"
-              minLength={2}
-              maxLength={100}
+              name="email"
+              type="email"
+              autoComplete="email"
+              maxLength={254}
               required
             />
           </label>
-        )}
-        <label className="block">
-          Correo electrónico
-          <input
-            className={inputClass}
-            name="email"
-            type="email"
-            autoComplete="email"
-            maxLength={254}
-            required
-          />
-        </label>
-        <label className="block">
-          Contraseña
-          <input
-            className={inputClass}
-            name="password"
-            type="password"
-            autoComplete={registering ? "new-password" : "current-password"}
-            minLength={registering ? 15 : 1}
-            maxLength={128}
-            aria-describedby={registering ? "password-help" : undefined}
-            required
-          />
-          {registering && (
-            <span id="password-help" className="text-sm text-slate-700">
-              Usa al menos 15 caracteres.
-            </span>
+          <label className="block">
+            Contraseña
+            <input
+              className={inputClass}
+              name="password"
+              type="password"
+              autoComplete={registering ? "new-password" : "current-password"}
+              minLength={registering ? 15 : 1}
+              maxLength={128}
+              aria-describedby={registering ? "password-help" : undefined}
+              required
+            />
+            {registering && (
+              <span id="password-help" className="text-sm text-slate-700">
+                Usa al menos 15 caracteres.
+              </span>
+            )}
+          </label>
+          {error && (
+            <p role="alert" className="text-red-800">
+              {error}
+            </p>
           )}
-        </label>
-        {error && (
-          <p role="alert" className="text-red-800">
-            {error}
-          </p>
-        )}
-        <button type="submit" disabled={pending} className="src-primary">
-          {pending ? "Enviando…" : title}
-        </button>
-      </form>
+          <button type="submit" disabled={pending} className="src-primary">
+            {pending ? "Enviando…" : title}
+          </button>
+        </form>
+      )}
       <p className="mt-6">
         <Link
           className="text-blue-800 underline"

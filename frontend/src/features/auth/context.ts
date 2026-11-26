@@ -8,7 +8,7 @@ type AuthState = {
   unavailable: boolean;
   retry: () => void;
   login: (credentials: Credentials) => Promise<void>;
-  register: (registration: Registration) => Promise<void>;
+  register: (registration: Registration) => Promise<boolean>;
   logout: () => Promise<void>;
   clearSession: () => Promise<void>;
 };

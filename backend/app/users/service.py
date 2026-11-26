@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session as DbSession
 
 from app.auth.dependencies import AuthContext
 from app.auth.security import hash_password, verify_password
+from app.auth.supabase import PasswordGrant, SupabaseAuth, delete_identity
 from app.core.errors import ApiError
 from app.models import Room, RoomMember, Schedule, Session, User
 from app.users.schemas import (
@@ -18,19 +19,50 @@ from app.users.schemas import (
 )
 
 
+def invalid_password() -> ApiError:
+    return ApiError(
+        403,
+        "REAUTHENTICATION_REQUIRED",
+        "La contraseña actual es obligatoria y debe ser correcta.",
+    )
+
+
 def reauthenticate(user: User, password: str | None) -> None:
-    if password is None or not verify_password(password, user.password_hash):
-        raise ApiError(
-            403,
-            "REAUTHENTICATION_REQUIRED",
-            "La contraseña actual es obligatoria y debe ser correcta.",
-        )
+    if (
+        not password
+        or not user.password_hash
+        or not verify_password(password, user.password_hash)
+    ):
+        raise invalid_password()
 
 
-def update_profile(db: DbSession, user: User, data: ProfileUpdate) -> None:
-    if data.email is not None and data.email != user.email:
-        reauthenticate(user, data.current_password)
-        user.email = data.email
+def managed_grant(
+    provider: SupabaseAuth, auth: AuthContext, password: str | None
+) -> PasswordGrant:
+    grant = provider.authenticate(auth.email, password) if password else None
+    if grant is None:
+        raise invalid_password()
+    if grant.user.id != auth.user.id:
+        provider.end_grant(grant)
+        raise invalid_password()
+    return grant
+
+
+def update_profile(
+    db: DbSession, auth: AuthContext, data: ProfileUpdate, provider: SupabaseAuth | None
+) -> None:
+    user = auth.user
+    if data.email is not None and data.email != auth.email:
+        if provider:
+            grant = managed_grant(provider, auth, data.current_password)
+            try:
+                provider.update_email(grant, data.email)
+            finally:
+                provider.end_grant(grant)
+        else:
+            reauthenticate(user, data.current_password)
+            user.email = data.email
+            auth.email = data.email
     if data.name is not None:
         user.name = data.name
     try:
@@ -46,9 +78,22 @@ def update_profile(db: DbSession, user: User, data: ProfileUpdate) -> None:
         raise
 
 
-def change_password(db: DbSession, auth: AuthContext, current: str, new: str) -> None:
-    reauthenticate(auth.user, current)
-    auth.user.password_hash = hash_password(new)
+def change_password(
+    db: DbSession,
+    auth: AuthContext,
+    current: str,
+    new: str,
+    provider: SupabaseAuth | None,
+) -> None:
+    if provider:
+        grant = managed_grant(provider, auth, current)
+        try:
+            provider.update_password(grant, current, new)
+        finally:
+            provider.end_grant(grant)
+    else:
+        reauthenticate(auth.user, current)
+        auth.user.password_hash = hash_password(new)
     db.execute(
         delete(Session).where(
             Session.user_id == auth.user.id, Session.id != auth.session.id
@@ -129,9 +174,17 @@ def deletion_conflict() -> ApiError:
 
 
 def delete_account(
-    db: DbSession, user: User, data: DeletionInput, expected_version: str | None
+    db: DbSession,
+    auth: AuthContext,
+    data: DeletionInput,
+    expected_version: str | None,
+    provider: SupabaseAuth | None,
 ) -> None:
-    reauthenticate(user, data.current_password)
+    user = auth.user
+    if provider:
+        provider.end_grant(managed_grant(provider, auth, data.current_password))
+    else:
+        reauthenticate(user, data.current_password)
     rooms = owned_rooms(db, user, lock=True)
     preview, eligible = describe_deletion(db, user, rooms, lock=True)
     if expected_version != preview_version(preview):
@@ -157,3 +210,6 @@ def delete_account(
             room.owner_user_id = replacement.user_id
     db.flush()
     db.delete(user)
+    if provider:
+        db.flush()
+        delete_identity(db, user.id)

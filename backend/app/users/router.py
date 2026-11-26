@@ -3,6 +3,7 @@ from sqlalchemy.exc import DBAPIError
 
 from app.auth.dependencies import (
     AppSettings,
+    AuthProvider,
     CsrfUser,
     CurrentUser,
     Db,
@@ -35,27 +36,37 @@ json_body = [Depends(require_json)]
 def read_profile(response: Response, db: Db, auth: CurrentUser) -> UserView:
     db.commit()
     response.headers["Cache-Control"] = "no-store"
-    return UserView.model_validate(auth.user)
+    return UserView(id=auth.user.id, name=auth.user.name, email=auth.email)
 
 
 @router.patch("", dependencies=json_body)
 def save_profile(
-    data: ProfileUpdate, request: Request, response: Response, db: Db, auth: CsrfUser
+    data: ProfileUpdate,
+    request: Request,
+    response: Response,
+    db: Db,
+    auth: CsrfUser,
+    provider: AuthProvider,
 ) -> UserView:
-    if data.email is not None and data.email != auth.user.email:
-        limit(request, "reauth", auth.user.email)
-    update_profile(db, auth.user, data)
+    if data.email is not None and data.email != auth.email:
+        limit(request, "reauth", auth.email)
+    update_profile(db, auth, data, provider)
     db.commit()
     response.headers["Cache-Control"] = "no-store"
-    return UserView.model_validate(auth.user)
+    return UserView(id=auth.user.id, name=auth.user.name, email=auth.email)
 
 
 @router.put("/password", status_code=204, dependencies=json_body)
 def save_password(
-    data: PasswordUpdate, request: Request, response: Response, db: Db, auth: CsrfUser
+    data: PasswordUpdate,
+    request: Request,
+    response: Response,
+    db: Db,
+    auth: CsrfUser,
+    provider: AuthProvider,
 ) -> None:
-    limit(request, "reauth", auth.user.email)
-    change_password(db, auth, data.current_password, data.new_password)
+    limit(request, "reauth", auth.email)
+    change_password(db, auth, data.current_password, data.new_password, provider)
     db.commit()
     response.headers["Cache-Control"] = "no-store"
 
@@ -77,10 +88,11 @@ def remove_account(
     db: Db,
     auth: CsrfUser,
     settings: AppSettings,
+    provider: AuthProvider,
 ) -> None:
-    limit(request, "reauth", auth.user.email)
+    limit(request, "reauth", auth.email)
     try:
-        delete_account(db, auth.user, data, request.headers.get("if-match"))
+        delete_account(db, auth, data, request.headers.get("if-match"), provider)
         db.commit()
     except DBAPIError as error:
         if getattr(error.orig, "sqlstate", None) in {"23503", "40001", "40P01"}:

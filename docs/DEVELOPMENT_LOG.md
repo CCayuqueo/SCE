@@ -385,3 +385,33 @@ F5-09 completada. Fase 5 parcialmente completada hasta confirmar los créditos (
 ### Pendientes para el lanzamiento
 
 - Validar en un servidor el certificado del dominio y la ejecución programada del respaldo, confirmar los créditos y hacer la aceptación con usuarios reales. Los ensayos de CI usan cuentas ficticias y un certificado temporal.
+
+## 2026-11-25 — Fase 5 — Integración de Supabase Auth
+
+### Objetivo
+
+Usar el nuevo proyecto Supabase como autoridad de credenciales y preservar los permisos por sala y la eliminación transaccional de SRC.
+
+### Cambios implementados
+
+- FastAPI usa la API de Supabase Auth para el registro, el login y la reautenticación. El navegador recibe la cookie de SRC y el frontend muestra el estado pendiente de confirmación de correo.
+- La migración `0003` admite perfiles con identidad externa. `permissions.sql` crea el rol restringido y las funciones necesarias para obtener el correo confirmado y eliminar la identidad dentro de la transacción de SRC.
+- Se documentaron las variables de entorno, SMTP, los permisos y el procedimiento para probar la autenticación alojada. La aplicación no necesita una clave elevada de la API de Supabase.
+
+### Archivos creados
+
+- `backend/app/auth/supabase.py`, `backend/migrations/versions/0003_supabase_identity.py`, `backend/tests/test_supabase_auth.py` e `infrastructure/supabase/permissions.sql`.
+
+### Archivos modificados
+
+- Flujos de autenticación, perfil y sesión de FastAPI y React, configuración, dependencias, `.env.example`, `README.md` y documentación de API, persistencia, despliegue y seguimiento.
+
+### Pruebas realizadas
+
+- `alembic upgrade head` y `alembic check` sobre PostgreSQL 17.12 temporal. Pasaron 40 pruebas de backend y la cobertura de los módulos medidos fue del 92 %.
+- El caso de integración simuló HTTP de Supabase y usó las funciones SQL reales con el rol de aplicación. Verificó la confirmación, el cambio de correo, el cierre de otras sesiones al cambiar la contraseña y la reversión de la eliminación si falla la identidad.
+- Pasaron Ruff, ESLint, Prettier, dos pruebas Vitest y la compilación de TypeScript y Vite.
+
+### Estado y próximo paso
+
+Adaptador implementado. Faltan el empaquetado para Render y la prueba con el servicio alojado y SMTP. La aceptación con usuarios reales y el respaldo del proyecto Supabase siguen pendientes.

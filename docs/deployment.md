@@ -55,10 +55,41 @@ Registra la URL, el commit desplegado, las pruebas realizadas y los problemas
 detectados en la bitácora. La suite automatizada crea y elimina datos de prueba:
 ejecútala solo contra una base desechable.
 
-Para PostgreSQL administrado en otro proveedor, adapta el despliegue a su conexión
-TLS y suministra `DATABASE_URL` al backend como secreto. Usa un rol de aplicación
-dedicado y limita el acceso de red al servidor SRC. Analiza las migraciones y los
-permisos de acceso en staging antes de conectar datos reales.
+### Base de datos y autenticación en Supabase
+
+Usa un proyecto vacío de staging. En Supabase, desactiva la Data API del
+proyecto. FastAPI se conecta a PostgreSQL y usa la API de Auth por separado.
+En **Authentication → Sign In / Providers**, habilita Email y su confirmación,
+conserva la confirmación segura del cambio de correo y fija un mínimo de 15
+caracteres para las contraseñas. Configura SMTP para los correos de los usuarios
+de aceptación. En **URL Configuration**, usa el origen HTTPS de SRC como **Site
+URL** y agrega ese origen seguido de `/login` a **Redirect URLs**.
+
+1. Desde `backend/`, ejecuta `alembic upgrade head` con `DATABASE_URL`
+   configurada de forma privada para el administrador de ese proyecto. Usa la
+   conexión directa o **Connect → Session pooler**. Usa TLS con verificación
+   del certificado y un cliente PostgreSQL compatible. Mantén la cadena fuera
+   del historial del shell, de Git y de los logs.
+2. Ejecuta `infrastructure/supabase/permissions.sql` como `postgres` en el
+   proyecto de staging. Crea el rol restringido `src_app`. Asigna una contraseña
+   independiente de forma interactiva con `\password src_app` en `psql` y
+   habilita su acceso con `ALTER ROLE src_app LOGIN`. El backend no necesita el
+   rol administrador ni una API key elevada.
+3. Configura `DATABASE_URL` para `src_app`, `SUPABASE_URL` con la URL HTTPS del
+   proyecto y `SUPABASE_PUBLISHABLE_KEY` con su clave `sb_publishable_`. En el
+   pooler compartido el usuario es `src_app.<project-ref>` y el puerto de sesión
+   es `5432`. Copia el host del panel y configura `sslmode=verify-full` con el
+   CA que corresponda a la conexión. Usa el origen HTTPS público de SRC para
+   `APP_ORIGIN` y `APP_ENV=staging` durante la aceptación.
+4. Comprueba `/api/v1/health/ready` y registra una cuenta nueva. Confirma el
+   correo, inicia sesión, prueba los cambios de contraseña y correo y elimina
+   una cuenta con transferencia de sala. Comprueba la revocación desde otro
+   navegador. El entorno Compose local continúa usando PostgreSQL y Auth local
+   cuando ambas variables de Supabase se omiten.
+
+El respaldo programado del proyecto administrado debe incluir las identidades
+de Auth y los datos de SRC. Ensaya su restauración en un proyecto separado.
+El script de respaldo de Compose respalda su propia base local.
 
 ## Observabilidad
 
