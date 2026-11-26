@@ -10,7 +10,8 @@ image="$COMPOSE_PROJECT_NAME-render"
 container="$COMPOSE_PROJECT_NAME-render-check"
 bootstrap="$RUNNER_TEMP/src-supabase-bootstrap.sql"
 docker build -f backend/Dockerfile -t "$image" .
-docker run --rm -e DATABASE_URL=postgresql+psycopg://placeholder@localhost/postgres \
+docker run --rm -e APP_ENV=test \
+    -e DATABASE_URL=postgresql+psycopg://placeholder@localhost/postgres \
     "$image" alembic upgrade head --sql > "$bootstrap"
 cat infrastructure/supabase/permissions.sql >> "$bootstrap"
 

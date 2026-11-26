@@ -428,6 +428,7 @@ Adaptador implementado. Faltan el empaquetado para Render y la prueba con el ser
 
 - Se verificaron el frontend compilado, rutas profundas, JavaScript, cabeceras y respuestas 404 con TestClient. Se generó el SQL desde Alembic con la revisión `0003` y las funciones de permisos.
 - Pasaron Ruff, `git diff --check`, la validación sintáctica de los scripts y la configuración de Compose. El daemon local de Docker negó el acceso al socket, por lo que la construcción se verifica en GitHub Actions.
+- La [primera ejecución](https://github.com/CCayuqueo/SCE/actions/runs/45735359236) construyó la imagen de Render. La generación de SQL sin conexión heredaba `APP_ENV=staging` y pedía un origen HTTPS. Ese paso ahora usa el modo de prueba.
 
 ### Estado y próximo paso
 
