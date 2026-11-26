@@ -1,6 +1,6 @@
 services:
   database:
-    image: postgres:17-alpine
+    build: ./infrastructure/postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-src}
       POSTGRES_DB: ${POSTGRES_DB:-src}

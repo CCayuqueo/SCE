@@ -98,3 +98,13 @@
 - Justificación: Un mismo origen simplifica las cookies. El identificador permite correlacionar solicitudes sin registrar rutas, consultas, cuerpos o cabeceras privadas.
 - Consecuencias: El operador aprovisiona y renueva certificado y clave. Las pruebas locales usan certificados temporales. La operación debe configurar la retención de logs y respaldos.
 - Archivos afectados: `docker-compose.production.yml`, `infrastructure/nginx/`, `backend/app/core/request_log.py` y `docs/deployment.md`.
+
+## ADR-010 — Migración lógica al cambiar la imagen base de PostgreSQL
+
+- Fecha: 2026-11-25.
+- Estado: Adoptada en Fase 5.
+- Contexto: La auditoría de las imágenes detectó vulnerabilidades críticas en la base Debian de PostgreSQL y en un binario de la imagen. La imagen Alpine conserva PostgreSQL 17 y usa musl.
+- Decisión: Usar `postgres:17-alpine` con un volumen propio. La imagen de SRC sustituye el binario `gosu` afectado por `su-exec` de Alpine y conserva el entrypoint oficial que cambia al usuario `postgres`. Para instalaciones existentes, exportar un respaldo lógico y restaurarlo en el volumen nuevo antes de reabrir el servicio.
+- Justificación: La restauración lógica reconstruye los índices con las reglas de ordenamiento de la nueva imagen y conserva el volumen anterior para una reversión controlada.
+- Consecuencias: Las instalaciones existentes requieren una ventana de mantenimiento y la validación del respaldo antes del cambio. El procedimiento de despliegue documenta la migración y la reversión.
+- Archivos afectados: `docker-compose.yml`, `infrastructure/postgres/Dockerfile`, `.github/workflows/ci.yml` y `docs/deployment.md`.

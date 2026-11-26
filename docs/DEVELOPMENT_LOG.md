@@ -347,3 +347,35 @@ Confirmar créditos, validar la infraestructura real y realizar la aceptación a
 ### Estado
 
 Fase 5 parcialmente completada. El usuario configuró `origin` y renombró la rama a `main`. La consulta remota encontró `main` en `6fc243f` y cero ejecuciones de GitHub Actions. Quedan pendientes Docker, staging con dominio real, respaldo programado activo, créditos confirmados y aceptación con usuarios. Se conserva `main` y se guarda el bloque en una rama local de QA.
+
+## 2026-11-25 — Fase 5 — Verificación de la candidata en GitHub Actions
+
+### Objetivo
+
+Verificar la configuración de lanzamiento desde un checkout de `develop` y ensayar la recuperación de datos en Docker.
+
+### Cambios implementados
+
+- El backend se ejecuta con UID y GID numéricos sin privilegios. Así se corrigió el conflicto con el grupo `src` de la imagen base.
+- CI levanta el perfil de producción en un proyecto Compose efímero y restringe los puertos a localhost. Verifica TLS, salud, migraciones, navegación y restauración en una base separada.
+- Trivy audita las tres imágenes construidas y devuelve error ante vulnerabilidades críticas. Las imágenes base de Python, Nginx y PostgreSQL se actualizaron después de la primera auditoría.
+- PostgreSQL 17 en Alpine usa un volumen nuevo. La documentación explica cómo migrar el volumen Debian anterior con un respaldo lógico (ADR-010).
+
+### Archivos creados
+
+- `.github/scripts/check-staging.sh`, `.github/scripts/audit-images.sh` e `infrastructure/postgres/Dockerfile`.
+
+### Archivos modificados
+
+- `.github/workflows/ci.yml`, `backend/Dockerfile`, `frontend/Dockerfile`, `docker-compose.yml`, `README.md` y documentación de seguimiento, despliegue, pruebas y decisiones.
+
+### Pruebas realizadas
+
+- La [ejecución 45726375485](https://github.com/CCayuqueo/SCE/actions/runs/45726375485) aprobó los trabajos de frontend, backend y Compose. Se verificaron la grilla de las seis capturas dentro de la imagen y el arranque con PostgreSQL.
+- La [ejecución 45727454779](https://github.com/CCayuqueo/SCE/actions/runs/45727454779) aprobó el ensayo HTTPS y de restauración. Su auditoría identificó vulnerabilidades críticas en las imágenes base de los tres servicios.
+- La [ejecución 45728005133](https://github.com/CCayuqueo/SCE/actions/runs/45728005133) aprobó la restauración y cuatro pruebas Playwright. Trivy dejó de detectar vulnerabilidades críticas en frontend y backend. Reportó CVE-2025-68121 en `gosu`, incluido en la imagen oficial de PostgreSQL Alpine. La imagen de Compose lo sustituye por `su-exec` y conserva el entrypoint y la cuenta `postgres`.
+- Se comprobaron `bash -n`, `git diff --check` y las configuraciones Compose de desarrollo y producción.
+
+### Pendientes para el lanzamiento
+
+- Validar en un servidor el certificado del dominio y la ejecución programada del respaldo, confirmar los créditos y hacer la aceptación con usuarios reales. Los ensayos de CI usan cuentas ficticias y un certificado temporal.

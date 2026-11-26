@@ -3,10 +3,10 @@
 ## Estado general
 
 - Fase actual: Fase 5 — Inicio, Guía, pulido y QA.
-- Estado: Parcialmente completada. Candidata local verificada, lanzamiento pendiente.
+- Estado: Parcialmente completada. Candidata verificada localmente y en staging efímero, lanzamiento pendiente.
 - Última actualización: 2026-11-25.
 - Última tarea completada: Arranque Docker en GitHub Actions, HTTPS y restauración en staging efímero.
-- Próxima tarea pendiente: validar staging, completar créditos y aceptar la versión con usuarios reales.
+- Próxima tarea pendiente: validar el despliegue en un servidor, completar los créditos y realizar la aceptación con usuarios reales.
 - Aprobación para avanzar: Fase 5 autorizada. Publicación pendiente de verificación y aprobación.
 
 Los identificadores de las listas corresponden al checklist maestro §5.2.
@@ -15,7 +15,7 @@ validación de Fase 0 se realiza por entregable y por criterio CA0, sin renumera
 
 ## Fase 0 — Configuración e infraestructura
 
-El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docker, la verificación desde un clon y la ejecución de GitHub Actions.
+GitHub Actions verificó el arranque con Docker Compose desde un checkout limpio. La Fase 1 fue autorizada y ejecutada.
 
 - [x] F0-01 · Crear repositorio y estrategia de ramas.
 - [x] F0-02 · Inicializar React, TypeScript y Vite.
@@ -131,19 +131,20 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 - [x] F5-08 · Ejecutar pruebas de seguridad y concurrencia.
 - [ ] F5-09 · Preparar despliegue, HTTPS y respaldos.
 - [ ] F5-10 · Ejecutar pruebas de aceptación y documentar release.
+
 ### Criterios de aceptación de Fase 5
 
 | ID | Estado | Evidencia |
 |---|---|---|
 | CA5-01 | Verificado localmente | SRC visible en Inicio público y privado. |
-| CA5-02 | Parcial | Sección incluida. Nombres y créditos de autoría sin confirmar. |
+| CA5-02 | Verificado | La sección Equipo desarrollador aparece en el Inicio público y privado. Quedan por confirmar los integrantes (F5-02). |
 | CA5-03 | Verificado | Playwright verifica Inicio, Salas y Ajustes en ese orden. |
 | CA5-04 | Verificado | La guía queda al final y se puede abrir por teclado. |
 | CA5-05 | Verificado | Guía con captura de referencia y explicación de edición, confirmación y análisis. |
 | CA5-06 | Verificado | Chrome y Firefox también pasaron en staging efímero. Edge pasó por HTTPS local. |
 | CA5-07 | Verificado | El flujo de tres cuentas pasó en los tres navegadores en local y se repitió en Chrome y Firefox sobre Docker y HTTPS en CI. |
 | CA5-08 | Parcial | npm y pip-audit sin hallazgos. Faltan imágenes de producción y revisión en staging. |
-| CA5-09 | Parcial | Redirección 308, HSTS, salud y flujos Playwright verificados en staging efímero con TLS. Falta el certificado del dominio real. |
+| CA5-09 | Verificado en CI | Redirección 308, HSTS, salud y flujos Playwright verificados en staging efímero con TLS. Queda por validar el certificado del dominio real antes de publicar. |
 | CA5-10 | Verificado | Documentación de operación, despliegue y recuperación, y unidades para el respaldo diario. |
 
 ### Criterios de aceptación de Fase 0
@@ -161,7 +162,6 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 ## Problemas pendientes
 
 - El daemon local de Docker no está disponible para esta sesión. GitHub Actions ya verificó el arranque en contenedores.
-- `develop` está publicada en el remoto de GitHub y ejecuta CI.
 - No hay servidor de staging persistente configurado. Los ensayos de infraestructura usan un entorno efímero en GitHub Actions.
 - Créditos del equipo pendientes de confirmación.
 
@@ -175,4 +175,4 @@ El usuario autorizó iniciar Fase 1. Continúan pendientes el arranque con Docke
 
 ## Próximos pasos
 
-- Validar imágenes, HTTPS y migraciones en staging, y registrar la aceptación con usuarios reales antes de publicar.
+- Desplegar la candidata en staging con dominio, verificar HTTPS y el respaldo programado, y registrar la aceptación con usuarios reales antes de publicar.
