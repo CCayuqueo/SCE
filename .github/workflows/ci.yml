@@ -67,6 +67,8 @@ jobs:
 
   compose:
     runs-on: ubuntu-latest
+    env:
+      COMPOSE_PROJECT_NAME: src_ci_${{ github.run_id }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -101,13 +103,16 @@ jobs:
           counts = [sum(cell.is_occupied for cell in processor.process(file.read_bytes())) for file in files]
           assert counts == [15, 17, 17, 16, 13, 18], counts
           '
-      - name: Verificar flujos de navegador
+      - name: Instalar navegadores de prueba
         working-directory: frontend
         run: |
           npm ci
           npx playwright install --with-deps chromium firefox
-          npm run test:e2e
+      - name: Verificar staging efímero con HTTPS y restauración
+        run: bash .github/scripts/check-staging.sh
+      - name: Auditar imágenes de ejecución
+        run: bash .github/scripts/audit-images.sh
       - if: failure()
         run: docker compose logs
       - if: always()
-        run: docker compose down
+        run: docker compose down --volumes

@@ -20,6 +20,12 @@ de arrancar. Verifica el mismo artefacto, un respaldo y las pruebas de navegador
 en staging antes de promover una versión. Tras renovar el certificado, recarga
 Nginx con `docker compose -f docker-compose.yml -f docker-compose.production.yml exec frontend nginx -s reload`.
 
+GitHub Actions ensaya esa configuración en un proyecto Compose desechable
+con HTTPS restringido a localhost, un certificado temporal y datos ficticios.
+El runner comprueba migraciones, flujos de navegador y restauración, y audita
+las imágenes de ejecución. La instalación en un servidor requiere validar por
+separado el dominio, el certificado real y la ejecución programada del respaldo.
+
 Para PostgreSQL administrado en otro proveedor, adapta el despliegue a su conexión
 TLS y suministra `DATABASE_URL` al backend como secreto. Usa un rol de aplicación
 dedicado y limita el acceso de red al servidor SRC. Analiza las migraciones y los
