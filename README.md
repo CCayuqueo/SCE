@@ -167,6 +167,7 @@ Los [resultados y datos de prueba](docs/testing.md) describen lo que ya se verif
 - `frontend/`: aplicación web y pruebas de cliente.
 - `backend/`: API, configuración, migraciones y pruebas Python.
 - `infrastructure/nginx/`: configuración del proxy.
+- `infrastructure/postgres/`: imagen de PostgreSQL que usa Docker Compose.
 - `horario_parser.py` e `images/`: procesador determinista y capturas de referencia existentes.
 - [Arquitectura](docs/architecture.md), [base de datos](docs/database.md), [API](docs/api.md), [reglas de negocio](docs/business-rules.md) y [cambios](CHANGELOG.md).
 - [Plan maestro](SRC_Plan_Maestro_Desarrollo_V1.md), [bitácora](docs/DEVELOPMENT_LOG.md), [estado](docs/DEVELOPMENT_PROGRESS.md) y [decisiones técnicas](docs/TECHNICAL_DECISIONS.md).

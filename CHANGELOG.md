@@ -8,3 +8,4 @@
 - Superposición de disponibilidad e inspección de horarios confirmados.
 - Inicio público y privado, navegación adaptable, guía y suite Playwright.
 - Configuración HTTPS, logs estructurados y procedimiento de respaldo.
+- GitHub Actions verifica Docker Compose, los flujos HTTPS, la restauración de PostgreSQL y las vulnerabilidades críticas de las imágenes.
