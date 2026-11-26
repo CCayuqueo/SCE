@@ -59,6 +59,13 @@ Pasaron 39 pruebas de backend con 94 % de cobertura en los módulos medidos.
 Trivy detectó cero vulnerabilidades críticas en las imágenes de frontend,
 backend y PostgreSQL.
 
+La [ejecución 45736121907](https://github.com/CCayuqueo/SCE/actions/runs/45736121907)
+validó la imagen de Render con 512 MiB y 0,1 CPU. Comprobó el SQL de inicio,
+la salud con `src_app`, las rutas de React y las seis capturas. Cada captura
+tardó entre 4,39 y 4,50 s. La auditoría de las cuatro imágenes pasó. El
+[artefacto SQL](https://github.com/CCayuqueo/SCE/actions/runs/45736121907/artifacts/15078792522)
+se generó sin secretos y se aplicó a PostgreSQL efímero.
+
 ## Pendiente de lanzamiento
 
 El entorno efímero usa un certificado temporal. Quedan por verificar el dominio,

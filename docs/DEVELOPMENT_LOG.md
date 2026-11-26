@@ -430,6 +430,7 @@ Adaptador implementado. Faltan el empaquetado para Render y la prueba con el ser
 - Pasaron Ruff, `git diff --check`, la validación sintáctica de los scripts y la configuración de Compose. El daemon local de Docker negó el acceso al socket, por lo que la construcción se verifica en GitHub Actions.
 - La [primera ejecución](https://github.com/CCayuqueo/SCE/actions/runs/45735359236) construyó la imagen de Render. La generación de SQL sin conexión heredaba `APP_ENV=staging` y pedía un origen HTTPS. Ese paso ahora usa el modo de prueba.
 - El [segundo ensayo](https://github.com/CCayuqueo/SCE/actions/runs/45735728666) aplicó todo el SQL. La primera consulta llegó al puerto de Docker antes de que Uvicorn escuchara y recibió una conexión reiniciada. La comprobación ahora reintenta ese caso. Con Uvicorn y PostgreSQL locales, el arranque respondió en `/login` y `/api/v1/health/ready` usando `src_app` y la revisión `0003`.
+- La [ejecución 45736121907](https://github.com/CCayuqueo/SCE/actions/runs/45736121907) aprobó los tres trabajos. Con 512 MiB y 0,1 CPU, el contenedor de Render verificó las seis capturas en 4,39 a 4,50 s cada una. También pasaron Playwright, la restauración y la auditoría de las cuatro imágenes. CI publicó el SQL de inicialización.
 
 ### Estado y próximo paso
 

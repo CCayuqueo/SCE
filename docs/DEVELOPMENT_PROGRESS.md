@@ -5,7 +5,7 @@
 - Fase actual: Fase 5 — Inicio, Guía, pulido y QA.
 - Estado: Parcialmente completada. Candidata verificada localmente y en staging efímero, lanzamiento pendiente.
 - Última actualización: 2026-11-25.
-- Última tarea completada: F5-09. Preparación de despliegue con arranque Docker, HTTPS, restauración y auditoría de imágenes verificados en CI.
+- Última tarea completada: Empaquetado para Render, arranque con el rol `src_app` en una base efímera y publicación del SQL inicial. [Ejecución 45736121907](https://github.com/CCayuqueo/SCE/actions/runs/45736121907).
 - Próxima tarea pendiente: inicializar el proyecto Supabase y crear el servicio Render para validar Auth en staging. Completar créditos y aceptación con usuarios reales.
 - Aprobación para avanzar: Fase 5 autorizada. Publicación pendiente de verificación y aprobación.
 
@@ -163,7 +163,7 @@ GitHub Actions verificó el arranque con Docker Compose desde un checkout limpio
 
 - El daemon local de Docker no está disponible para esta sesión. GitHub Actions ya verificó el arranque en contenedores.
 - No hay servidor de staging persistente configurado. Los ensayos de infraestructura usan un entorno efímero en GitHub Actions.
-- Proyecto Supabase de staging identificado. El usuario autorizó Supabase Auth. El adaptador se verificó con PostgreSQL local y respuestas de Auth simuladas. Faltan el proveedor alojado, SMTP y el despliegue en Render.
+- Proyecto Supabase de staging identificado y repositorio visible en Render. El adaptador se verificó con PostgreSQL local y respuestas de Auth simuladas. Faltan inicializar el proyecto alojado, crear el servicio en Render y configurar SMTP.
 - Créditos del equipo pendientes de confirmación.
 
 ## Dependencias pendientes
